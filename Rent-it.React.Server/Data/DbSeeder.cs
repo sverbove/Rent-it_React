@@ -15,7 +15,10 @@ namespace Rent_it.React.Server.Data
             using (var context = new RentItDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<RentItDbContext>>()))
             {
-                context.Database.EnsureCreated();
+                if (context.Database.GetPendingMigrations().Any())
+                {
+                    context.Database.Migrate();
+                }
 
                 // Kijk of er al data in de Klanten tabel zitten
                 if (!context.Klanten.Any(k => k.Email == "thijsje123@gmail.com"))
