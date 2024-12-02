@@ -15,6 +15,7 @@ namespace Rent_it.React.Server.Data
             using (var context = new RentItDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<RentItDbContext>>()))
             {
+
                 if (context.Database.GetPendingMigrations().Any())
                 {
                     context.Database.Migrate();
