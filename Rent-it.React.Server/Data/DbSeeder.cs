@@ -28,7 +28,7 @@ namespace Rent_it.React.Server.Data
                     context.Klanten.AddRange(
                         new Klant
                         {
-                            Naam = "Gerrit Bakker",
+                            Naam = "Gerrit Ballen",
                             Adres = "Mijnenveld 12, Den Haag",
                             Email = "gerrit@gmail.com",
                             TelNr = "0648777123",
