@@ -1,0 +1,6 @@
+@Rent_it.React.Server_HostAddress = http://localhost:5174
+
+GET {{Rent_it.React.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
