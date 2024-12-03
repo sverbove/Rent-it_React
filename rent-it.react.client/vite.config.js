@@ -37,7 +37,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
     env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7212';
 
-// https://vitejs.dev/config/
+/* https://vitejs.dev/config/ */
 export default defineConfig({
     plugins: [plugin()],
     resolve: {
@@ -58,4 +58,14 @@ export default defineConfig({
             cert: fs.readFileSync(certFilePath),
         }
     }
-})
+}) 
+
+/* import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+    plugins: [react()],
+    server: {
+    port: 3000,
+    },
+}); */

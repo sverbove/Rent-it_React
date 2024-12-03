@@ -37,10 +37,14 @@ if (app.Environment.IsDevelopment())
 }
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.MapFallbackToFile("index.html");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=index}/{id?}");
+app.MapFallbackToFile("Home.js");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseWebSockets();
 
 app.UseRouting();
 
