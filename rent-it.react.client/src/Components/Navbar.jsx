@@ -29,7 +29,7 @@ const Navbar = () => {
                     cursor: 'pointer',
                     transition: 'background-color 0.3s',
                 }}>Home</Link>
-                <Link to="/ZakelijkInfo" style={{
+                <Link to="/Zakelijk" style={{
                     textDecoration: 'none',
                     fontSize: '30px',
                     fontWeight: 'bold',

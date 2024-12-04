@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '/src/Components/Navbar'; // Zorg ervoor dat het pad klopt naar je Navbar-component
 
-const ZakelinkInfo = () => {
+const ParticulierInfo = () => {
     return (
         <div style={{
             fontFamily: 'Arial, sans-serif',
@@ -25,12 +25,12 @@ const ZakelinkInfo = () => {
                         overflow: 'hidden',
                     }}
                 >
-                    {/* Background Image */}
+                    {/* Foto achtergrond */}
                     <div
                         style={{
                             backgroundImage: 'url("/src/assets/SkylineDenHaag.jpeg")',
                             backgroundSize: 'cover',
-                            backgroundPosition: 'center',
+                            backgroundPosition: 'bottom',
                             position: 'absolute',
                             top: 0,
                             left: 0,
@@ -40,4 +40,10 @@ const ZakelinkInfo = () => {
                             opacity: '50%', // Alternatief voor opacity zonder invloed op tekst
                         }}
                     />
-                    
+                </div>
+            </main>
+        </div>
+    );
+};
+
+export default ParticulierInfo;

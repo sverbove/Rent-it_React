@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '/src/Components/Navbar'; // Zorg ervoor dat het pad klopt naar je Navbar-component
 
-const AbonnementenInfo = () => {
+const LogIn = () => {
     return (
         <div style={{
             fontFamily: 'Arial, sans-serif',
@@ -46,4 +46,4 @@ const AbonnementenInfo = () => {
     );
 };
 
-export default AbonnementenInfo;
+export default LogIn;
