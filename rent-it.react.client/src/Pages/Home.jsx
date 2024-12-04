@@ -1,4 +1,5 @@
 import React from 'react';
+import Navbar from '/src/Components/Navbar'; // Zorg ervoor dat het pad klopt naar je Navbar-component
 
 const Home = () => {
     return (
@@ -12,16 +13,8 @@ const Home = () => {
             flexDirection: 'column',
             boxSizing: 'border-box',
         }}>
-            <header style={{ display: 'flex', alignItems: 'center', padding: '10px 20px', backgroundColor: '#ddd' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                        src="/src/assets/Logo.png"
-                        alt="Logo"
-                        style={{ width: 'auto', height: '40px', marginRight: '10px' }}
-                    />
-                    <span style={{ fontSize: '20px', fontWeight: 'bold' }}>I</span>
-                </div>
-            </header>
+            {/* Gebruik de Navbar-component */}
+            <Navbar />
 
             <main style={{ position: 'relative', textAlign: 'center', color: '#fff', flex: 1 }}>
                 <div
@@ -36,7 +29,7 @@ const Home = () => {
                     {/* Background Image */}
                     <div
                         style={{
-                            backgroundImage: 'url("/src/assets/SkylineDenHaag.jpeg")', // Voeg het pad naar de skyline-afbeelding hier in
+                            backgroundImage: 'url("/src/assets/SkylineDenHaag.jpeg")',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             position: 'absolute',
@@ -94,7 +87,7 @@ const Home = () => {
 
             <footer
                 style={{
-                    backgroundColor: '#D9D9D9',
+                    backgroundColor: '#FFFFFF',
                     padding: '10px 20px',
                     textAlign: 'center',
                 }}
