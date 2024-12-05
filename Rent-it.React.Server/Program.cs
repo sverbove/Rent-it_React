@@ -40,7 +40,7 @@ app.UseStaticFiles();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=index}/{id?}");
-app.MapFallbackToFile("Home.js");
+app.MapFallbackToFile("index.html");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
