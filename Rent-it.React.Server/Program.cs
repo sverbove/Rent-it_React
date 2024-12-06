@@ -17,17 +17,6 @@ builder.Services.AddAuthentication(options =>
         options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
     });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReactApp",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-        });
-});
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
@@ -56,9 +45,6 @@ app.MapFallbackToFile("index.html");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseWebSockets();
-app.UseCors("AllowReactApp");
-
-app.UseRouting();
 
 app.UseAuthorization();
 
