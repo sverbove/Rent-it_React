@@ -16,7 +16,7 @@ const LogIn = () => {
 
             <Footer />
         </div>
-    );
-};
+    ); 
+};  
 
 export default LogIn;
