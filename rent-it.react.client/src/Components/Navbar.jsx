@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     return (
-        <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', backgroundColor: '#ddd' }}>
+        <header style={{ position: top, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', backgroundColor: '#D9D9D9' }}>
             {/* Logo */}
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Link to="/Home" style={{ textDecoration: 'none' }}>
