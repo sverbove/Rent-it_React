@@ -18,28 +18,16 @@ const Contact = () => {
             <main style={{ position: 'relative', textAlign: 'center', color: '#fff', flex: 1 }}>
                 <div
                     style={{
-                        position: 'relative',
-                        height: '70vh',
-                        marginTop: '20px',
-                        marginBottom: '10px',
-                        overflow: 'hidden',
+                        position: 'absolute',
+                        marginLeft: '20px',
+                        marginTop: '0px',
+                        textAlign: 'left',
+                        color: '#000000',
                     }}
                 >
-                    {/* Foto achtergrond */}
-                    <div
-                        style={{
-                            backgroundImage: 'url("/src/assets/SkylineDenHaag.jpeg")',
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'bottom',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            zIndex: 1,
-                            opacity: '50%', // Alternatief voor opacity zonder invloed op tekst
-                        }}
-                    />
+                    <h1 style={{
+                        fontSize: '30px', margin: 0
+                    }}> test</h1>
                 </div>
             </main>
         </div>

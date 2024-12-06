@@ -78,7 +78,7 @@ const Home = () => {
                         position: 'absolute',
                         bottom: '0px',
                         right: '25px',
-                        width: '700px',
+                        width: '30%',
                         height: 'auto',
                         zIndex: 3, // Zorg dat de afbeelding boven de tekst ligt
                     }}
