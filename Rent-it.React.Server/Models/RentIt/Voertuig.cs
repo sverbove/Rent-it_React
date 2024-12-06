@@ -1,15 +1,17 @@
-﻿namespace Rent_it.React.Server.Models.RentIt
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Rent_it.React.Server.Models.RentIt
 {
     public class Voertuig
     {
-        /*private int voertuigID;
-        private int bouwjaar;
-        private string merk;
-        private string type;
-        private string kenteken;
-        private string kleur;
-        private string status;
-        private string soort;
+        [Key]
+        public int VoertuigId { get; set; }
+        public string Soort { get; set; }
+        public string Merk { get; set; }
+        public string Type { get; set; }
+        public string Kleur { get; set; }
+        public string Kenteken { get; set; }
+        public int Aanschafjaar { get; set; }
         public bool Beschikbaar { get; set; }
 
         public void updateVoertuigStatus()
@@ -18,7 +20,7 @@
 
         public bool IsBeschikbaar()
         {
-            return Beschikbaar
-        }*/
+            return Beschikbaar;
+        }
     }
 }
