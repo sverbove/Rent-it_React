@@ -25,7 +25,7 @@ namespace Rent_it.React.Server.Data
                 if (!context.Voertuigen.Any(v => v.Kenteken == "AB-123-CD"))
                 {
                     context.Voertuigen.AddRange(
-                        /* Auto's */
+                        /* Autos */
                         new Voertuig { Soort = "Auto", Merk = "Toyota", Type = "Corolla", Kenteken = "AB-123-CD", Kleur = "Rood", Aanschafjaar = 2018 },
                         new Voertuig { Soort = "Auto", Merk = "Ford", Type = "Focus", Kenteken = "EF-456-GH", Kleur = "Blauw", Aanschafjaar = 2019 },
                         new Voertuig { Soort = "Auto", Merk = "Volkswagen", Type = "Golf", Kenteken = "IJ-789-KL", Kleur = "Zwart", Aanschafjaar = 2020 },
