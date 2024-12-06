@@ -17,7 +17,6 @@ builder.Services.AddAuthentication(options =>
         options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
     });
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -54,7 +53,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
-// Mockup data
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
