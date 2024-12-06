@@ -13,7 +13,7 @@ const LoginForm = () => {
     };
 
     return (
-        <form method="post" onSubmit={handleSubmit}>
+        <form method="post" onSubmit={handleSubmit} className="loginFormBox">
             <div className="col-10">
                 <input
                     type="text"

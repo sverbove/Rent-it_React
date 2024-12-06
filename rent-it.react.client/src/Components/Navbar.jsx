@@ -20,7 +20,7 @@ const Navbar = () => {
             <nav style={{ display: 'flex', gap: '15px' }}>
                 <Link to="/Home" style={{
                     textDecoration: 'none',
-                    fontSize: '30px',
+                    fontSize: '24px',
                     fontWeight: 'bold',
                     marginLeft: '20px',
                     marginTop: '0px',
@@ -31,7 +31,7 @@ const Navbar = () => {
                 }}>Home</Link>
                 <Link to="/Zakelijk" style={{
                     textDecoration: 'none',
-                    fontSize: '30px',
+                    fontSize: '24px',
                     fontWeight: 'bold',
                     marginLeft: '50px',
                     marginTop: '0px',
@@ -42,7 +42,7 @@ const Navbar = () => {
                 }}>Zakelijk</Link>
                 <Link to="/Particulier" style={{
                     textDecoration: 'none',
-                    fontSize: '30px',
+                    fontSize: '24px',
                     fontWeight: 'bold',
                     marginLeft: '50px',
                     marginTop: '0px',
@@ -53,7 +53,7 @@ const Navbar = () => {
                 }}>Particulier</Link>
                 <Link to="/Catalogus" style={{
                     textDecoration: 'none',
-                    fontSize: '30px',
+                    fontSize: '24px',
                     fontWeight: 'bold',
                     marginLeft: '50px',
                     marginTop: '0px',
@@ -64,7 +64,7 @@ const Navbar = () => {
                 }}>Catalogus</Link>
                 <Link to="/Contact" style={{
                     textDecoration: 'none',
-                    fontSize: '30px',
+                    fontSize: '24px',
                     fontWeight: 'bold',
                     marginLeft: '50px',
                     marginTop: '0px',
@@ -77,7 +77,7 @@ const Navbar = () => {
 
             <Link to="/Login" style={{
                 textDecoration: 'none',
-                fontSize: '30px',
+                fontSize: '24px',
                 fontWeight: 'bold',
                 marginRight: '10px',
                 marginTop: '0px',

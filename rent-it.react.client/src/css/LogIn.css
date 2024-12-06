@@ -26,14 +26,14 @@
     background-color: ghostwhite;
 }
 
-form {
+.loginFormBox {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
     background-color: #D9D9D9;
 }
 
-form label {
+.loginFormBox label {
     font-weight: bold;
 }
 

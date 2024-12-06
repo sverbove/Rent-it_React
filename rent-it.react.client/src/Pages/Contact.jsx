@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 import Navbar from '/src/Components/Navbar';
 import Footer from '/src/Components/Footer';
-import Swal from 'sweetalert2'
-import '/src/css/Contact.css'
+import Swal from 'sweetalert2';
+import '/src/css/Contact.css';
 
 const Contact = () => {
 
@@ -34,27 +34,31 @@ const Contact = () => {
     };
 
     return (
-        <section className="contact">
+        <div className="mainWrapper">
             <Navbar />
-            <form onSubmit={ onSubmit }>
-                <h2>Contact Formulier</h2>
-                <div className="input-box">
-                    <label>Volledige naam</label>
-                    <input type="text" className="field" placeholder='Vul uw naam in' name='name' required />
-                </div>
-                <div className="input-box">
-                    <label>Email-adres</label>
-                    <input type="text" className="field" placeholder='Vul uw email-adres in' name='email' required />
-                </div>
-                <div className="input-box">
-                    <label>Bericht</label>
-                    <textarea name="message" className="field mess" placeholder='Vul uw bericht in' required></textarea>
-                </div>
-                <button type="submit">Verstuur bericht</button>
-            </form>
+            <section className="contact">
+                <form onSubmit={onSubmit} className="contactForm">
+                    <h2>Contact Formulier</h2>
+                    <div className="input-box">
+                        <label className="hiddenLabel">Volledige naam</label>
+                        <input type="text" className="field" placeholder='Vul uw naam in' name='name' required />
+                    </div>
+                    <div className="input-box">
+                        <label className="hiddenLabel">Email-adres</label>
+                        <input type="text" className="field" placeholder='Vul uw email-adres in' name='email' required />
+                    </div>
+                    <div className="input-box">
+                        <label className="hiddenLabel">Bericht</label>
+                        <textarea name="message" className="field mess" placeholder='Vul uw bericht in' required></textarea>
+                    </div>
+                    <div className="button-box">
+                        <button type="submit">Verstuur bericht</button>
+                    </div>
+                </form>
+            </section>
             <Footer />
-        </section>
-    )
+        </div>
+    );
 }
 
-export default Contact
+export default Contact;

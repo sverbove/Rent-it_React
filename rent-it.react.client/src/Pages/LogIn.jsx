@@ -36,12 +36,6 @@ const LogIn = () => {
                         Sign in with Google
                     </button>
                 </div>
-
-                {/*<div class="card shadow border w-75">
-                    <div class="card-body p-2">
-                        
-                    </div>
-                </div>*/} 
             </main>
 
             <Footer />
