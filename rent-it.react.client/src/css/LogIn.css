@@ -81,3 +81,15 @@ h1 {
     font-size: 50px;
     color: black;
 }
+
+.registerText {
+    color: black;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.registerLink {
+    color: purple;
+    color: dodgerblue;
+    cursor: pointer;
+}
