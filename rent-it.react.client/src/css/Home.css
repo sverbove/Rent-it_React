@@ -24,12 +24,11 @@ html, body {
     text-align: center;
     color: black;
     flex: 1;
-    padding: 20px;
 }
 
 .backdrop {
     position: relative;
-    height: auto;
+    height: 900px;
     margin-top: 20px;
     margin-bottom: 10px;
     overflow: hidden;
@@ -92,5 +91,4 @@ footer {
     padding: 10px 20px;
     text-align: center;
     margin-top: auto;
-    width: 100%;
 }
