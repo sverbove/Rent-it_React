@@ -27,5 +27,7 @@
             Huurperiodes.Add(huurperiode);
             Geschiedenis.Add($"Huurperiode ingesteld van {startDatum.ToShortDateString()} tot {eindDatum.ToShortDateString()}")
         }*/
+
+
     }
 }

@@ -1,15 +1,52 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import '/src/css/LogIn.css';
 
 const LoginForm = () => {
-    /* useState to update the input field */
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Submitted email:', email);
-        console.log('Submitted password:', password);
+
+        try {
+            const response = await fetch('https://localhost:5001/api/Login/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login succesvol',
+                    text: `Welkom terug, ${data.gebruikersnaam}!`,
+                });
+
+                localStorage.setItem('token', data.token);
+
+                // Redirect to /home
+                navigate('/home');
+            } else {
+                const errorMessage = await response.text();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login mislukt',
+                    text: errorMessage || 'Onjuiste e-mail of wachtwoord.',
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Fout bij verbinding',
+                text: 'Kan geen verbinding maken met de server.',
+            });
+        }
     };
 
     return (

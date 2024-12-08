@@ -93,3 +93,27 @@ h1 {
     color: dodgerblue;
     cursor: pointer;
 }
+
+.registerFormBox {
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.tableRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.tableColumn {
+    flex: 1;
+}
+
+.registerFormControl {
+    width: 250px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 2px solid #ddd;
+    font-size: 16px;
+}

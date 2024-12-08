@@ -5,43 +5,86 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Rent_It_project.Controllers
 {
-    public class LoginController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class LoginController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly RentItDbContext _context;
+
+        public LoginController(RentItDbContext context)
         {
-            return View();
+            _context = context;
         }
 
-        public async Task Login()
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginDto loginDto)
         {
-            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
-                new AuthenticationProperties
-                {
-                    RedirectUri = Url.Action("GoogleResponse")
-                });
-        }
+            var user = _context.Accounts.FirstOrDefault(u => u.Email == loginDto.Email);
 
-        public async Task<IActionResult> GoogleResponse()
-        {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Wachtwoord))
             {
-                claim.Issuer,
-                claim.OriginalIssuer,
-                claim.Type,
-                claim.Value
+                return Unauthorized("Onjuiste e-mail of wachtwoord.");
+            }
+
+            // Genereer token
+            var token = GenerateJwtToken(user);
+
+            return Ok(new
+            {
+                gebruikersnaam = user.Gebruikersnaam,
+                token = token
             });
-
-            // return Json(claims);
-
-            return RedirectToAction("Index", "Home", new { area = "" });
         }
 
-        public async Task<IActionResult> Logout()
+        private string GenerateJwtToken(Account user)
         {
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            // Zet code voor token generation hier
+            return "dummy-jwt-token"; // Placeholder token
         }
     }
+
+    public class LoginDto
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+    /* Oude Google Oauth code */
+    /* nog omschrijven naar code voor react + asp */
+    /*public IActionResult Index()
+    {
+        return View();
+    }
+
+    public async Task Login()
+    {
+        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+            new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            });
+    }
+
+    public async Task<IActionResult> GoogleResponse()
+    {
+        var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+        {
+            claim.Issuer,
+            claim.OriginalIssuer,
+            claim.Type,
+            claim.Value
+        });
+
+        // return Json(claims);
+
+        return RedirectToAction("Index", "Home", new { area = "" });
+    }
+
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync();
+        return RedirectToAction("Index", "Home");
+    }*/
 }

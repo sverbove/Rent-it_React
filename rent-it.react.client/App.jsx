@@ -8,6 +8,7 @@ import Contact from "/src/Pages/Contact";
 import LogIn from "/src/Pages/LogIn";
 import Register from "/src/Pages/Register";
 import AbonnementenInfo from "/src/Pages/AbonnementenInfo";
+import LoginForm from "./src/Components/LoginForm";
 
 const App = () => {
     return (
@@ -22,6 +23,9 @@ const App = () => {
                 <Route path="/LogIn" element={<LogIn />} />
                 <Route path="/Register" element={<Register />} />
                 <Route path="/AbonnementenInfo" element={<AbonnementenInfo />} />
+
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/home" element={<Home />} />
             </Routes>
         </BrowserRouter>
     );
