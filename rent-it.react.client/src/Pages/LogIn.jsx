@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '/src/Components/Navbar';
 import Footer from '/src/Components/Footer';
 import LoginForm from '/src/Components/LoginForm';
@@ -35,6 +36,8 @@ const LogIn = () => {
                         </svg>
                         Sign in with Google
                     </button>
+
+                    <p className="registerText">Nog geen account? <Link to="/Register" className="registerLink">Registreren</Link></p>
                 </div>
             </main>
 
