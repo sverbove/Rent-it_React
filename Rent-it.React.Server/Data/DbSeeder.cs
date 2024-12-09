@@ -30,7 +30,7 @@ namespace Rent_it.React.Server.Data
                             Gebruikersnaam = "Particulier",
                             Email = "test@gmail.com",
                             Wachtwoord = BCrypt.Net.BCrypt.HashPassword("Password123"),
-                            Rol = "Particulier Klant",
+                            Rol = "Particuliere Klant",
                             IsActief = true
                         },
                         new Account

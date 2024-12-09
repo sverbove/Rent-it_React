@@ -5,6 +5,7 @@ import '/src/css/Zakelijk.css';
 import '/src/css/Home.css';
 
 const Zakelijk = () => {
+    //hello
     return (
         <div className="mainWrapper">
             <Navbar />  

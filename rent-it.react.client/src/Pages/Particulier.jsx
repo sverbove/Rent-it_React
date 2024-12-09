@@ -26,7 +26,7 @@ const Particulier = () => {
         <div className="mainWrapper">
             <Navbar />
             <div className="particulierHero">
-                <h1>Ontdek onze voertuigen</h1>
+                <h1>Ontdek onze voertuigen!</h1>
                 <p>Van stadsritten tot vakantieavonturen, wij hebben het perfecte voertuig voor jou.</p>
             </div>
             <section className="catalogusSection">
