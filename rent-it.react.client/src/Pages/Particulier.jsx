@@ -30,7 +30,7 @@ const Particulier = () => {
                 <p>Van stadsritten tot vakantieavonturen, wij hebben het perfecte voertuig voor jou.</p>
             </div>
             <section className="catalogusSection">
-                <h2>Voertuigcategorieën</h2>
+                <h2>VoertuigTypen</h2>
                 <div className="catalogusGrid">
                     {catalogusItems.map((item, index) => (
                         <div key={index} className="catalogusCard">
