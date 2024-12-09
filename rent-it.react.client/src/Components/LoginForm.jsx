@@ -10,9 +10,13 @@ const LoginForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Debug: Form submitted');
+        console.log('Debug: Email:', email);
+        console.log('Debug: Password:', password);
 
         try {
-            const response = await fetch('https://localhost:5001/api/Login/login', {
+            console.log('Debug: Making API request to /api/Login/login');
+            const response = await fetch('/api/Login/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -20,8 +24,13 @@ const LoginForm = () => {
                 body: JSON.stringify({ email, password }),
             });
 
+            console.log('Debug: Response received:', response);
+
             if (response.ok) {
+                console.log('Debug: Response status is OK');
                 const data = await response.json();
+                console.log('Debug: Response data:', data);
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Login succesvol',
@@ -29,11 +38,15 @@ const LoginForm = () => {
                 });
 
                 localStorage.setItem('token', data.token);
+                console.log('Debug: Token saved to localStorage');
 
                 // Redirect to /home
                 navigate('/home');
+                console.log('Debug: Navigated to /home');
             } else {
                 const errorMessage = await response.text();
+                console.error('Debug: Response not OK. Error message:', errorMessage);
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Login mislukt',
@@ -41,6 +54,8 @@ const LoginForm = () => {
                 });
             }
         } catch (error) {
+            console.error('Debug: API request failed:', error);
+
             Swal.fire({
                 icon: 'error',
                 title: 'Fout bij verbinding',

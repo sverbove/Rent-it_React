@@ -52,10 +52,10 @@ const RegisterForm = () => {
         };
 
         try {
-            const response = await fetch("https://localhost:5001/Account/register", {
-                method: "POST",
+            const response = await fetch('/api/Account/register', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(accountData),
             });
