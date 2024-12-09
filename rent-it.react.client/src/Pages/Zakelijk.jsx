@@ -4,6 +4,7 @@ import Footer from '/src/Components/Footer';
 import '/src/css/Zakelijk.css';
 
 const Zakelijk = () => {
+    //hello
     return (
         <div>
             <Navbar />
