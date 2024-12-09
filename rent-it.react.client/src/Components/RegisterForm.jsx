@@ -37,7 +37,7 @@ const RegisterForm = () => {
             Swal.fire({
                 icon: "error",
                 title: "Ongeldig e-mailadres",
-                text: "Een zakelijke klant kan geen e-mailadres met @gmail.com hebben",
+                text: "Zakelijk email-adres mag niet op '@gmail' eindigen.",
             });
             return;
         }
@@ -52,13 +52,16 @@ const RegisterForm = () => {
         };
 
         try {
-            const response = await fetch('/api/Account/register', {
+            const response = await fetch('http://localhost:57440/api/Account/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(accountData),
             });
+
+            console.log("Debug: Response status", response.status);
+            console.log("Debug: Response text", await response.text());
 
             if (response.ok) {
                 Swal.fire({
@@ -75,6 +78,7 @@ const RegisterForm = () => {
                 setUserType("Particuliere Klant");
             } else {
                 const errorMessage = await response.text();
+                console.error("Debug: Error message", errorMessage);
                 Swal.fire({
                     icon: "error",
                     title: "Registratie mislukt",
@@ -82,12 +86,14 @@ const RegisterForm = () => {
                 });
             }
         } catch (error) {
+            console.error("Debug: Fetch error", error);
             Swal.fire({
                 icon: "error",
                 title: "Fout bij verbinding",
                 text: "Kan geen verbinding maken met de server.",
             });
         }
+
     };
 
     return (
