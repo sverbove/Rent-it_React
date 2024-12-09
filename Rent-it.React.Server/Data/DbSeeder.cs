@@ -22,6 +22,30 @@ namespace Rent_it.React.Server.Data
                     context.Database.Migrate();
                 }
 
+                if (!context.Accounts.Any())
+                {
+                    context.Accounts.AddRange(
+                        new Account
+                        {
+                            Gebruikersnaam = "Particulier",
+                            Email = "test@gmail.com",
+                            Wachtwoord = BCrypt.Net.BCrypt.HashPassword("Password123"),
+                            Rol = "Particuliere Klant",
+                            IsActief = true
+                        },
+                        new Account
+                        {
+                            Gebruikersnaam = "Zakelijk",
+                            Email = "test@bedrijf.com",
+                            Wachtwoord = BCrypt.Net.BCrypt.HashPassword("Password123"),
+                            Rol = "Zakelijke Klant",
+                            IsActief = true
+                        }
+                    );
+
+                    context.SaveChanges();
+                }
+
                 if (!context.Voertuigen.Any(v => v.Kenteken == "AB-123-CD"))
                 {
                     context.Voertuigen.AddRange(
