@@ -7,6 +7,7 @@ body {
 
 /* Hero Section */
 .particulierHero {
+    background-blend-mode: darken;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("/src/assets/SkylineDenHaag.jpeg") no-repeat center center/cover;
     color: white;
     text-align: center;
@@ -16,6 +17,7 @@ body {
     .particulierHero h1 {
         font-size: 3rem;
         margin-bottom: 15px;
+        color: white;
     }
 
     .particulierHero p {
