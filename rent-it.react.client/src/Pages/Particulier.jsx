@@ -26,11 +26,11 @@ const Particulier = () => {
         <div className="mainWrapper">
             <Navbar />
             <div className="particulierHero">
-                <h1>Ontdek onze voertuigen</h1>
+                <h1>Ontdek onze voertuigen!</h1>
                 <p>Van stadsritten tot vakantieavonturen, wij hebben het perfecte voertuig voor jou.</p>
             </div>
             <section className="catalogusSection">
-                <h2>Voertuigcategorieën</h2>
+                <h2>VoertuigTypen</h2>
                 <div className="catalogusGrid">
                     {catalogusItems.map((item, index) => (
                         <div key={index} className="catalogusCard">
