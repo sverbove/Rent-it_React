@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rent_It_project.Models.Bedrijf;
 
-namespace Rent_It_project.Controllers
+namespace Rent_it.React.Server.Controllers
 {
     [ApiController]
     public class WagenparkController : ControllerBase

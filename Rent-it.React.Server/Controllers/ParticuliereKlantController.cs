@@ -1,4 +1,4 @@
-namespace Rent_It_Project.Controllers
+namespace Rent_it.React.Server.Controllers
 {
 	/*[route("api/[controller]")]
 	[ApiController]

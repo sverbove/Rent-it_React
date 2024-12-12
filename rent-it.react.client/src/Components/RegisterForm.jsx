@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import axios from 'axios';
 import "/src/css/LogIn.css";
 
 const RegisterForm = () => {
@@ -43,24 +44,27 @@ const RegisterForm = () => {
         }
 
         // Prepare account data
-        const accountData = {
+        /*const accountData = {
             Gebruikersnaam: name,
             Email: email,
             Wachtwoord: password,
             Rol: userType,
             IsActief: true,
-        };
+        };*/
 
         try {
-            const response = await fetch('/api/Account/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(accountData),
+            const response = await axios.post('/api/accounts/register', {
+                email,
+                password,
+                name,
+                userType,
             });
+            alert(response.data);
+        } catch (error) {
+            alert(error.response.data || "Er is een fout opgetreden.");
+        }
 
-            if (response.ok) {
+           /* if (response.ok) {
                 Swal.fire({
                     icon: "success",
                     title: "Registratie gelukt",
@@ -87,7 +91,7 @@ const RegisterForm = () => {
                 title: "Fout bij verbinding",
                 text: "Kan geen verbinding maken met de server.",
             });
-        }
+        }*/
     };
 
     return (

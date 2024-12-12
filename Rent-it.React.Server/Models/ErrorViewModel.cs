@@ -1,4 +1,4 @@
-namespace Rent_It_project.Models
+namespace Rent_it.React.Server.Models
 {
     public class ErrorViewModel
     {

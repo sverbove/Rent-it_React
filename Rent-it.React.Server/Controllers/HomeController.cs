@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Rent_It_project.Models;
 using System.Diagnostics;
 
-namespace Rent_it.Controllers.Server
+namespace Rent_it.React.Server.Controllers
 {
     public class HomeController : Controller
     {
