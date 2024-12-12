@@ -8,7 +8,7 @@ const Particulier = () => {
         {
             title: "Auto's",
             description: "Praktische en zuinige voertuigen voor dagelijks gebruik en korte trips.",
-            image: "/src/assets/auto.jpg",
+            image: "/src/assets/auto.png",
         },
         {
             title: "Campers",
@@ -18,7 +18,7 @@ const Particulier = () => {
         {
             title: "Caravans",
             description: "Perfect voor langere verblijven op vakantie met veel ruimte.",
-            image: "/src/assets/caravan.jpg",
+            image: "/src/assets/caravan.jpg",        
         },
     ];
 
@@ -30,8 +30,8 @@ const Particulier = () => {
                 <p>Van stadsritten tot vakantieavonturen, wij hebben het perfecte voertuig voor jou.</p>
             </div>
             <section className="catalogusSection">
-                <h2>VoertuigTypen</h2>
-                <div className="catalogusGrid">
+                <h2>Voertuigcategorieen</h2>
+                 <div className="catalogusGrid">
                     {catalogusItems.map((item, index) => (
                         <div key={index} className="catalogusCard">
                             <img src={item.image} alt={item.title} />

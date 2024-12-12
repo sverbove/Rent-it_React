@@ -51,7 +51,7 @@ const Navbar = () => {
                     cursor: 'pointer',
                     transition: 'background-color 0.3s',
                 }}>Particulier</Link>
-                <Link to="/Catalogus" style={{
+                <Link to="/Info" style={{
                     textDecoration: 'none',
                     fontSize: '24px',
                     fontWeight: 'bold',
@@ -61,7 +61,7 @@ const Navbar = () => {
                     borderRadius: '5px',
                     cursor: 'pointer',
                     transition: 'background-color 0.3s',
-                }}>Catalogus</Link>
+                }}>Info</Link>
                 <Link to="/Contact" style={{
                     textDecoration: 'none',
                     fontSize: '24px',

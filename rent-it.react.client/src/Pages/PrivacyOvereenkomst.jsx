@@ -8,7 +8,7 @@ const PrivacyOvereenkomst = () => {
             <Navbar />
 
             <main className="mainSection">
-                <div className="textSection2" style={{ fontSize: '20px', color: 'black', opacity: '100%', lineHeight: '1.6' }}>
+                <div className="textSection2">
                     <h3>Privacybeleid Rent-It</h3>
                     <p>
                         Welkom bij Rent-It. We hechten veel waarde aan uw privacy en de bescherming van uw persoonsgegevens.
