@@ -15,8 +15,7 @@ const LoginForm = () => {
         console.log('Debug: Password:', password);
 
         try {
-            console.log('Debug: Making API request to /api/Login/login');
-            const response = await fetch('/api/Login/login', {
+            const response = await fetch('/api/Login/Login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -24,12 +23,8 @@ const LoginForm = () => {
                 body: JSON.stringify({ email, password }),
             });
 
-            console.log('Debug: Response received:', response);
-
             if (response.ok) {
-                console.log('Debug: Response status is OK');
                 const data = await response.json();
-                console.log('Debug: Response data:', data);
 
                 Swal.fire({
                     icon: 'success',
@@ -38,14 +33,10 @@ const LoginForm = () => {
                 });
 
                 localStorage.setItem('token', data.token);
-                console.log('Debug: Token saved to localStorage');
 
-                // Redirect to /home
-                navigate('/home');
-                console.log('Debug: Navigated to /home');
+                navigate('/home'); // Redirect to home page
             } else {
                 const errorMessage = await response.text();
-                console.error('Debug: Response not OK. Error message:', errorMessage);
 
                 Swal.fire({
                     icon: 'error',
@@ -54,7 +45,6 @@ const LoginForm = () => {
                 });
             }
         } catch (error) {
-            console.error('Debug: API request failed:', error);
 
             Swal.fire({
                 icon: 'error',
