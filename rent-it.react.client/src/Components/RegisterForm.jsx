@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "/src/css/LogIn.css";
 
@@ -9,6 +10,8 @@ const RegisterForm = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [name, setName] = useState("");
     const [userType, setUserType] = useState("Particuliere Klant");
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,34 +38,30 @@ const RegisterForm = () => {
             Swal.fire({
                 icon: "error",
                 title: "Ongeldig e-mailadres",
-                text: "Zakelijk email-adres mag niet op '@gmail' eindigen.",
+                text: "Zakelijk email-adres mag niet op '@gmail' eindigen",
             });
             return;
         }
 
         // Prepare account data
-        /*const accountData = {
+        const accountData = {
             Gebruikersnaam: name,
             Email: email,
             Wachtwoord: password,
             Rol: userType,
             IsActief: true,
-        };*/
+        };
 
         try {
-            const response = await fetch('/api/Account/register', {
+            const response = await fetch('/api/Account/Register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(accountData),
             });
-            alert(response.data);
-        } catch (error) {
-            alert(error.response.data || "Er is een fout opgetreden.");
-        }
 
-            if (response.ok) {
+            if(response.ok) {
                 Swal.fire({
                     icon: "success",
                     title: "Registratie gelukt",
@@ -74,6 +73,8 @@ const RegisterForm = () => {
                 setPassword("");
                 setConfirmPassword("");
                 setUserType("Particuliere Klant");
+                
+                navigate("/login"); // Redirect to login page
             } else {
                 const errorMessage = await response.text();
                 console.error("Debug: Error message", errorMessage);
@@ -82,13 +83,13 @@ const RegisterForm = () => {
                     title: "Registratie mislukt",
                     text: errorMessage || "Er is een fout opgetreden.",
                 });
-            }
+            }   
         } catch (error) {
-            console.error("Debug: Fetch error", error);
+            console.error("Registratiefout:", error);
             Swal.fire({
                 icon: "error",
-                title: "Fout bij verbinding",
-                text: "Kan geen verbinding maken met de server.",
+                title: "Registratie mislukt",
+                text: "Kan geen verbinding maken met de server. Controleer uw internetverbinding.",
             });
         }
     };

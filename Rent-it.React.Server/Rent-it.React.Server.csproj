@@ -11,9 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\AccountController.cs" />
     <Compile Remove="Controllers\HomeController.cs" />
-    <Compile Remove="Controllers\LoginController.cs" />
     <Compile Remove="Controllers\ParticuliereKlantController.cs" />
     <Compile Remove="Controllers\WagenparkController.cs" />
     <Compile Remove="Controllers\ZakelijkeKlantController.cs" />
@@ -24,9 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Controllers\AccountController.cs" />
     <None Include="Controllers\HomeController.cs" />
-    <None Include="Controllers\LoginController.cs" />
     <None Include="Controllers\ParticuliereKlantController.cs" />
     <None Include="Controllers\WagenparkController.cs" />
     <None Include="Controllers\ZakelijkeKlantController.cs" />

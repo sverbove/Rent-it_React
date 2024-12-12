@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rent_it.React.Server.Models.Klanten;
 using Rent_it.React.Server.Data;
+using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace Rent_it.React.Server.Controllers
 {
@@ -15,7 +17,7 @@ namespace Rent_it.React.Server.Controllers
             _context = context;
         }
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] AccountDto accountDto)
         {
             if (await _context.Accounts.AnyAsync(a => a.Email == accountDto.Email))
@@ -27,8 +29,8 @@ namespace Rent_it.React.Server.Controllers
             {
                 Gebruikersnaam = accountDto.Gebruikersnaam,
                 Email = accountDto.Email,
-                Wachtwoord = BCrypt.Net.Bcrypt.HashPassword(accountDto.Wachtwoord), // Hash password
-                Rol = accountDto.Rol
+                Wachtwoord = BCrypt.Net.BCrypt.HashPassword(accountDto.Wachtwoord), // Hash password
+                Rol = accountDto.Rol,
                 IsActief = true
             };
 
@@ -38,10 +40,10 @@ namespace Rent_it.React.Server.Controllers
             return Ok("Account aangemaakt");
         }
 
-        [HttpPost("register")]
+        /*[HttpPost("register")]
         public IActionResult Test ()
         {
             return Ok("Test endpoint success!");
-        }
+        }*/
     }
 }

@@ -2,76 +2,86 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
+using Rent_it.React.Server.Data;
+using Rent_it.React.Server.Models.Klanten;
 
-namespace Rent_it.React.Server.Controllers
+namespace Rent_It_project.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
-        private static readonly string[] Names = new[]
-        {
-            "Tester1", "Tester2", "Tester3", "Tester4"
-        };
+        private readonly RentItDbContext _context;
 
-        private readonly ILogger<LoginController> _logger;
-
-        public LoginController(ILogger<LoginController> logger)
+        public LoginController(RentItDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
-        [HttpGet(Name = "GetLogin")]
-        public IEnumerable<Account> Get()
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginDto loginDto)
         {
-            return Enumerable.Range(1, 5).Select(index => new Account
-            {
-                Gebruikersnaam = "TestUser",
-                Email = "test@gmail.com",
-                Wachtwoord = "Password123",
-                Rol = "Particuliere Klant",
-                IsActief = true
-            })
-            .ToArray();
-        }
-    }
+            var user = _context.Accounts.FirstOrDefault(u => u.Email == loginDto.Email);
 
-    /* Oude Google Oauth code */
-    /* nog omschrijven naar code voor react + asp */
-    /*public IActionResult Index()
-    {
-        return View();
-    }
-
-    public async Task Login()
-    {
-        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
-            new AuthenticationProperties
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Wachtwoord))
             {
-                RedirectUri = Url.Action("GoogleResponse")
+                return Unauthorized("Onjuiste e-mail of wachtwoord.");
+            }
+
+            // Genereer token
+            var token = GenerateJwtToken(user);
+
+            return Ok(new
+            {
+                gebruikersnaam = user.Gebruikersnaam,
+                token = token
             });
-    }
+        }
 
-    public async Task<IActionResult> GoogleResponse()
-    {
-        var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-        var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+        private string GenerateJwtToken(Account user)
         {
-            claim.Issuer,
-            claim.OriginalIssuer,
-            claim.Type,
-            claim.Value
-        });
+            // Zet code voor token generation hier
 
-        // return Json(claims);
+            return "dummy-jwt-token"; // Placeholder token
+        }
 
-        return RedirectToAction("Index", "Home", new { area = "" });
+        /* Oude Google Oauth code */
+        /* nog omschrijven naar code voor react + asp */
+        /*public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task Login()
+        {
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+                new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("GoogleResponse")
+                });
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            });
+
+            // return Json(claims);
+
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }*/
     }
-
-    public async Task<IActionResult> Logout()
-    {
-        await HttpContext.SignOutAsync();
-        return RedirectToAction("Index", "Home");
-    }*/
 }
