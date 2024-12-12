@@ -12,7 +12,6 @@ const RegisterForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Check password length
         if (password.length < 8) {
             Swal.fire({
                 icon: "error",
@@ -22,7 +21,6 @@ const RegisterForm = () => {
             return;
         }
 
-        // Check matching passwords
         if (password !== confirmPassword) {
             Swal.fire({
                 icon: "error",
@@ -32,7 +30,6 @@ const RegisterForm = () => {
             return;
         }
 
-        // Check email for Zakelijke Klant
         if (userType === "Zakelijke Klant" && email.endsWith("@gmail.com")) {
             Swal.fire({
                 icon: "error",
@@ -42,7 +39,6 @@ const RegisterForm = () => {
             return;
         }
 
-        // Prepare account data
         const accountData = {
             Gebruikersnaam: name,
             Email: email,
@@ -70,7 +66,6 @@ const RegisterForm = () => {
                     text: "Uw account is succesvol aangemaakt!",
                 });
 
-                // Clear form fields
                 setName("");
                 setEmail("");
                 setPassword("");
