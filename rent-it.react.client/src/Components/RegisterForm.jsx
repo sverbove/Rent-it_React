@@ -9,6 +9,10 @@ const RegisterForm = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [name, setName] = useState("");
     const [userType, setUserType] = useState("Particuliere Klant");
+}
+export default RegisterForm;
+    /*
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,13 +45,13 @@ const RegisterForm = () => {
         }
 
         // Prepare account data
-        /*const accountData = {
+        const accountData = {
             Gebruikersnaam: name,
             Email: email,
             Wachtwoord: password,
             Rol: userType,
             IsActief: true,
-        };*/
+        };
 
         try {
             const response = await fetch('/api/Account/register', {
@@ -174,6 +178,5 @@ const RegisterForm = () => {
             </div>
         </form>
     );
-};
+}; */
 
-export default RegisterForm;
