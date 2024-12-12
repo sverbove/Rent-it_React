@@ -15,12 +15,12 @@ namespace Rent_it.React.Server.Controllers
             _context = context;
         }
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] AccountDto accountDto)
         {
             if (await _context.Accounts.AnyAsync(a => a.Email == accountDto.Email))
             {
-                return BadRequest(new { message = "Email is al in gebruik" });
+                return BadRequest("Email is al in gebruik");
             }
 
             var account = new Account
@@ -35,6 +35,13 @@ namespace Rent_it.React.Server.Controllers
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
 
-            return Ok(new {message = "Account aangemaakt" });
+            return Ok("Account aangemaakt");
         }
+
+        [HttpPost("register")]
+        public IActionResult Test ()
+        {
+            return Ok("Test endpoint success!");
+        }
+    }
 }

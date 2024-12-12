@@ -5,6 +5,20 @@ using Rent_it.React.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string AllowSpecificOrigin = "AllowSpecificOrigin";
+
+// Configureer CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowSpecificOrigin,
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7212") // Vervang door de URL van je React-app
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // Voeg services toe aan de container
 builder.Services.AddAuthentication(options =>
 {
@@ -28,16 +42,9 @@ builder.Services.AddHttpClient();
 builder.Services.AddDbContext<RentItDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Voeg CORS toe voordat je builder.Build() aanroept
-builder.Services.AddCors(options =>
+builder.WebHost.ConfigureKestrel(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.WithOrigins("https://localhost:57440")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
+    options.ListenLocalhost(5002);
 });
 
 var app = builder.Build();
@@ -46,6 +53,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -53,7 +66,9 @@ app.UseStaticFiles();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.UseCors("AllowAll");
+app.UseRouting();
+
+app.UseCors(AllowSpecificOrigin);
 
 app.UseAuthentication();
 app.UseAuthorization();

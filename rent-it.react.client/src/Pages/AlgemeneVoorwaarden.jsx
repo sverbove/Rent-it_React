@@ -9,7 +9,7 @@ const AlgemeneVoorwaarden = () => {
             <Navbar />
 
             <main className="mainSection">
-                <div className="textSection2" style={{ fontSize: '20px', color: 'black', opacity: '100%', lineHeight: '1.6' }}>
+                <div className="textSection2">
                     <h3>Algemene Voorwaarden Rent-It</h3>
 
                     <h4>Artikel 1: Begrippen</h4>

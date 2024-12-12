@@ -10,10 +10,6 @@ const PrivacyOvereenkomst = () => {
             <main className="mainSection">
                 <div className="textSection2">
                     <h3>Privacybeleid Rent-It</h3>
-                    <p>
-                        Welkom bij Rent-It. We hechten veel waarde aan uw privacy en de bescherming van uw persoonsgegevens.
-                        Dit privacybeleid legt uit welke gegevens we verzamelen, hoe we deze gebruiken en welke rechten u heeft met betrekking tot uw gegevens.
-                    </p>
 
                     <h4>1. Verzamelde gegevens</h4>
                     <ul>

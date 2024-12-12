@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import axios from 'axios';
 import "/src/css/LogIn.css";
 
 const RegisterForm = () => {
@@ -12,7 +13,6 @@ const RegisterForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Check password length
         if (password.length < 8) {
             Swal.fire({
                 icon: "error",
@@ -22,7 +22,6 @@ const RegisterForm = () => {
             return;
         }
 
-        // Check matching passwords
         if (password !== confirmPassword) {
             Swal.fire({
                 icon: "error",
@@ -32,24 +31,23 @@ const RegisterForm = () => {
             return;
         }
 
-        // Check email for Zakelijke Klant
         if (userType === "Zakelijke Klant" && email.endsWith("@gmail.com")) {
             Swal.fire({
                 icon: "error",
                 title: "Ongeldig e-mailadres",
-                text: "Een zakelijke klant kan geen e-mailadres met @gmail.com hebben",
+                text: "Zakelijk email-adres mag niet op '@gmail' eindigen.",
             });
             return;
         }
 
         // Prepare account data
-        const accountData = {
+        /*const accountData = {
             Gebruikersnaam: name,
             Email: email,
             Wachtwoord: password,
             Rol: userType,
             IsActief: true,
-        };
+        };*/
 
         try {
             const response = await fetch('/api/Account/register', {
@@ -59,6 +57,10 @@ const RegisterForm = () => {
                 },
                 body: JSON.stringify(accountData),
             });
+            alert(response.data);
+        } catch (error) {
+            alert(error.response.data || "Er is een fout opgetreden.");
+        }
 
             if (response.ok) {
                 Swal.fire({
@@ -67,7 +69,6 @@ const RegisterForm = () => {
                     text: "Uw account is succesvol aangemaakt!",
                 });
 
-                // Clear form fields
                 setName("");
                 setEmail("");
                 setPassword("");
@@ -75,6 +76,7 @@ const RegisterForm = () => {
                 setUserType("Particuliere Klant");
             } else {
                 const errorMessage = await response.text();
+                console.error("Debug: Error message", errorMessage);
                 Swal.fire({
                     icon: "error",
                     title: "Registratie mislukt",
@@ -82,6 +84,7 @@ const RegisterForm = () => {
                 });
             }
         } catch (error) {
+            console.error("Debug: Fetch error", error);
             Swal.fire({
                 icon: "error",
                 title: "Fout bij verbinding",
