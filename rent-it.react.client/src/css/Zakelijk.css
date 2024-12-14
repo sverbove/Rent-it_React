@@ -6,16 +6,15 @@
     background-blend-mode: darken;
 }
 
-    .zakelijkHero h1 {
-        font-size: 3rem;
-        margin-bottom: 15px;
+.zakelijkHero h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
 
-    }
-
-    .zakelijkHero p {
-        font-size: 1.2rem;
-        margin-bottom: 25px;
-    }
+.zakelijkHero p {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+}
 
 .zakelijkBackground {
     background-image: url("/src/assets/SkylineDenHaag.jpeg");
@@ -53,9 +52,9 @@
     color: white;
 }
 
-    .btnPrimary:hover {
-        background: #0056b3;
-    }
+.btnPrimary:hover {
+    background: #0056b3;
+}
 
 .btnSecondary {
     background: white;
@@ -63,11 +62,10 @@
     border: 2px solid #007bff;
 }
 
-    .btnSecondary:hover {
-        background: #f0f0f0;
-    }
+.btnSecondary:hover {
+    background: #f0f0f0;
+}   
 
-/* Benefits Section */
 .benefitsSection {
     padding: 50px 20px;
     background-color: #f8f9fa;
@@ -91,12 +89,18 @@
     text-align: center;
 }
 
-    .benefitCard h3 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-    }
+.benefitCard h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
 
-    .benefitCard p {
-        font-size: 1rem;
-        color: #555;
-    }
+.benefitCard p {
+    font-size: 1rem;
+    color: #555;
+}
+
+.subscriptionSection {
+    padding: 50px 20px;
+    background-color: #f8f9fa;
+    position: center;
+}

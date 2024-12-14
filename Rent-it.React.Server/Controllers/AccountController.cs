@@ -3,6 +3,9 @@ using Rent_it.React.Server.Models.Klanten;
 using Rent_it.React.Server.Data;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Rent_it.React.Server.Controllers
 {
@@ -39,11 +42,5 @@ namespace Rent_it.React.Server.Controllers
 
             return Ok("Account aangemaakt");
         }
-
-        /*[HttpPost("register")]
-        public IActionResult Test ()
-        {
-            return Ok("Test endpoint success!");
-        }*/
     }
 }

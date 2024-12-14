@@ -1,31 +1,24 @@
-﻿namespace Rent_it.React.Server.Models.Bedrijven
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Rent_it.React.Server.Models.Bedrijven
 {
     public class Abonnement
     {
-        private int abonnementID;
-        private int kosten;
-        private string typeAbonennement;
-        private string startDatum;
-        private string eindDatum;
+        [Key]
+        public int Id { get; set; }
 
-        public void createAbonnement()
-        {
-        }
+        [Required]
+        public string Bedrijfsnaam { get; set; }
 
-        public void updateAbonnement()
-        {
-        }
+        [Required]
+        public string Adres { get; set; }
 
-        public void berekenKosten()
-        {
-        }
+        [Required]
+        public string KvkNummer { get; set; }
 
-        public void verlengAbonnement()
-        {
-        }
+        [Required]
+        public string Abonnementsvorm { get; set; }
 
-        public void stopAbonnement()
-        {
-        }
+        public DateTime AbonnementDate { get; set; } = DateTime.Now;
     }
 }

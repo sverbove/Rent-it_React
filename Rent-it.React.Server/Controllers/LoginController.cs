@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Rent_it.React.Server.Data;
 using Rent_it.React.Server.Models.Klanten;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Rent_It_project.Controllers
 {
@@ -29,59 +33,66 @@ namespace Rent_It_project.Controllers
             }
 
             // Genereer token
-            var token = GenerateJwtToken(user);
+            //var token = GenerateJwtToken(user);
 
             return Ok(new
             {
                 gebruikersnaam = user.Gebruikersnaam,
-                token = token
+                //token = token
             });
         }
 
         private string GenerateJwtToken(Account user)
         {
-            // Zet code voor token generation hier
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.Gebruikersnaam),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Rol),
+            };
 
-            return "dummy-jwt-token"; // Placeholder token
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(""));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "",
+                audience: "",
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        /* Oude Google Oauth code */
-        /* nog omschrijven naar code voor react + asp */
-        /*public IActionResult Index()
+        [HttpGet("GoogleLogin")]
+        public async Task GoogleLogin()
         {
-            return View();
-        }
+            var redirectUri = Url.Action("GoogleResponse", "Login", null, Request.Scheme);
 
-        public async Task Login()
-        {
             await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
                 new AuthenticationProperties
                 {
-                    RedirectUri = Url.Action("GoogleResponse")
+                    RedirectUri = redirectUri
                 });
         }
 
+        [HttpGet("GoogleResponse")]
         public async Task<IActionResult> GoogleResponse()
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            if (!result.Succeeded)
             {
-                claim.Issuer,
-                claim.OriginalIssuer,
+                return Unauthorized("Google authentication failed.");
+            }
+
+            var claims = result.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
+            {
                 claim.Type,
                 claim.Value
             });
 
-            // return Json(claims);
-
-            return RedirectToAction("Index", "Home", new { area = "" });
+            return Ok(new { Message = "Google login succesful", Claims = claims });
         }
-
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("Index", "Home");
-        }*/
     }
 }

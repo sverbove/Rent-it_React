@@ -35,7 +35,6 @@
     <None Include="Models\Klanten\Klant.cs" />
     <None Include="Models\Klanten\ParticuliereKlant.cs" />
     <None Include="Models\Klanten\ZakelijkeKlant.cs" />
-    <None Include="Models\Bedrijven\Abonnement.cs" />
     <None Include="Models\Bedrijven\BackofficeMedewerker.cs" />
     <None Include="Models\Bedrijven\FrontofficeMedewerker.cs" />
     <None Include="Models\Bedrijven\Huurperiode.cs" />
