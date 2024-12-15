@@ -1,0 +1,231 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Wrapper for the entire page */
+.aanvraagWrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 20px;
+}
+
+    /* Header Section */
+    .aanvraagWrapper h1 {
+        text-align: center;
+        font-size: 2.8rem;
+        margin-bottom: 20px;
+        color: #333;
+        font-weight: 700;
+    }
+
+/* Form Section */
+.formSection {
+    background-color: #f8f9fa; /* Light grey */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+    .formSection label {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .formSection input,
+    .formSection select {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 1rem;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: border-color 0.3s ease;
+    }
+
+        .formSection input:focus,
+        .formSection select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+
+    .formSection .fetchButton {
+        background-color: #007bff;
+        color: white;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    }
+
+        .formSection .fetchButton:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+/* Vehicle List Section */
+.voertuigenLijst {
+    margin-bottom: 40px;
+}
+
+    .voertuigenLijst h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .voertuigenLijst ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .voertuigenLijst li {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+        .voertuigenLijst li:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .voertuigenLijst li p {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #555;
+            margin: 5px 0;
+        }
+
+/* Selected Vehicle Section */
+.geselecteerdVoertuig {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+    .geselecteerdVoertuig h3 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .geselecteerdVoertuig p {
+        font-size: 1rem;
+        color: #555;
+        margin: 10px 0;
+    }
+
+    .geselecteerdVoertuig input {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: border-color 0.3s ease;
+    }
+
+        .geselecteerdVoertuig input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+
+    /* Insurance Options */
+    .geselecteerdVoertuig ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .geselecteerdVoertuig li {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+        .geselecteerdVoertuig li input {
+            margin-right: 10px;
+        }
+
+        .geselecteerdVoertuig li label {
+            font-size: 1rem;
+            color: #555;
+        }
+
+/* Submit Button */
+.submitButton {
+    background-color: #ff7f50;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(255, 127, 80, 0.4);
+    display: block;
+    margin: 0 auto;
+}
+
+    .submitButton:hover {
+        background-color: #e06a3f;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(224, 106, 63, 0.5);
+    }
+
+/* Status Message */
+.statusMessage {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #28a745;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formSection {
+        padding: 20px;
+    }
+
+    .geselecteerdVoertuig {
+        padding: 20px;
+    }
+
+    .voertuigenLijst ul {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .submitButton {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
