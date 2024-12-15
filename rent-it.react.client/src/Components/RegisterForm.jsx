@@ -10,10 +10,6 @@ const RegisterForm = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [name, setName] = useState("");
     const [userType, setUserType] = useState("Particuliere Klant");
-}
-export default RegisterForm;
-    /*
-    
 
     const navigate = useNavigate();
 
@@ -65,7 +61,7 @@ export default RegisterForm;
                 body: JSON.stringify(accountData),
             });
 
-            if(response.ok) {
+            if (response.ok) {
                 Swal.fire({
                     icon: "success",
                     title: "Registratie gelukt",
@@ -77,7 +73,7 @@ export default RegisterForm;
                 setPassword("");
                 setConfirmPassword("");
                 setUserType("Particuliere Klant");
-                
+
                 navigate("/login"); // Redirect to login page
             } else {
                 const errorMessage = await response.text();
@@ -87,7 +83,7 @@ export default RegisterForm;
                     title: "Registratie mislukt",
                     text: errorMessage || "Er is een fout opgetreden.",
                 });
-            }   
+            }
         } catch (error) {
             console.error("Registratiefout:", error);
             Swal.fire({
@@ -179,5 +175,6 @@ export default RegisterForm;
             </div>
         </form>
     );
-}; */
+};
 
+export default RegisterForm;
