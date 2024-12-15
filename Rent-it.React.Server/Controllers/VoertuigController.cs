@@ -1,62 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Rent_it.React.Server.Data; 
-using Rent_it.React.Server.Models; 
+using Rent_it.React.Server.Data;
 
-namespace RentItBackend.Controllers
+
+namespace Rent_it.React.Server.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class VoertuigenController : ControllerBase
+    [ApiController]
+    public class VehiclesController : ControllerBase
     {
         private readonly RentItDbContext _context;
 
-        public VoertuigenController(RentItDbContext context)
+        public VehiclesController(RentItDbContext context)
         {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<IActionResult> AlleVoertuigen()
+        public IActionResult GetVehicles()
         {
-            var voertuigen = await _context.Voertuigen.ToListAsync();
-            return Ok(voertuigen);
-        }
-
-        [HttpGet("filter")]
-        public async Task<IActionResult> GefilterdeVoertuigen(
-            [FromQuery] string soort,
-            [FromQuery] string merk,
-            [FromQuery] string kleur,
-            [FromQuery] int? aanschafjaar)
-        {
-            var query = _context.Voertuigen.AsQueryable();
-
-            if (!string.IsNullOrEmpty(soort))
+            var vehicles = _context.Voertuigen.Select(v => new
             {
-                query = query.Where(v => v.Soort.Equals(soort, StringComparison.OrdinalIgnoreCase));
-            }
+                VoertuigId = v.VoertuigId,
+                Soort = v.Soort,
+                Merk = v.Merk,
+                Type = v.Type,
+                Kleur = v.Kleur,
+                Kenteken = v.Kenteken,
+                Aanschafjaar = v.Aanschafjaar,
+                Status = v.Beschikbaar 
+            }).ToList();
 
-            if (!string.IsNullOrEmpty(merk))
-            {
-                query = query.Where(v => v.Merk.Equals(merk, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrEmpty(kleur))
-            {
-                query = query.Where(v => v.Kleur.Equals(kleur, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (aanschafjaar.HasValue)
-            {
-                query = query.Where(v => v.Aanschafjaar == aanschafjaar);
-            }
-
-            var gefilterdeVoertuigen = await query.ToListAsync();
-            return Ok(gefilterdeVoertuigen);
+            return Ok(vehicles);
         }
     }
 }

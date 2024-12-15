@@ -36,10 +36,10 @@ namespace Rent_it.React.Server.Models.RentIt
         public bool Beschikbaar { get; set; } = true;
 
         // Navigatie-eigenschap
-        public ICollection<VerhuurAanvraag> VerhuurAanvragen { get; set; }
+        // public ICollection<VerhuurAanvraag> VerhuurAanvragen { get; set; }
 
         // Methode: Beschikbaarheid controleren
-        public bool IsBeschikbaar(DateTime startDatum, DateTime eindDatum)
+        /* public bool IsBeschikbaar(DateTime startDatum, DateTime eindDatum)
         {
         }
 
@@ -47,5 +47,7 @@ namespace Rent_it.React.Server.Models.RentIt
         {
             return Beschikbaar;
         }
+
+        */
     }
 }

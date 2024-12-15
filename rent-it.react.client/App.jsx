@@ -12,6 +12,7 @@ import AlgemeneVoorwaarden from "/src/Pages/AlgemeneVoorwaarden";
 import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst";
 import LoginForm from "/src/Components/LoginForm";
 import Aanvraag from "/src/Pages/Aanvraag";
+import Temp from "/src/Pages/Temp";
 
 const App = () => {
     return (
@@ -31,6 +32,7 @@ const App = () => {
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/aanvraag" element={<Aanvraag />} />
+                <Route path="/Temp" element={<Temp />} />
             </Routes>
         </BrowserRouter>
     );
