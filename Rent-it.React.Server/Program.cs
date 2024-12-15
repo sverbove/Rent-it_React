@@ -13,7 +13,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: AllowSpecificOrigin,
         policy =>
         {
-            policy.WithOrigins("https://localhost:7212") // Vervang door de URL van je React-app
+            policy.WithOrigins("https://localhost:7212")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -25,12 +25,14 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 })
-    .AddCookie()
-    .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-    {
-        options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value ?? string.Empty;
-        options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value ?? string.Empty;
-    });
+.AddCookie()
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["GoogleKeys:ClientId"];
+    options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
+
+    options.CallbackPath = "/api/Login/GoogleResponse";
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();

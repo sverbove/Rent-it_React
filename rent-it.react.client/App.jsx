@@ -9,14 +9,15 @@ import LogIn from "/src/Pages/LogIn";
 import Register from "/src/Pages/Register";
 import AbonnementenInfo from "/src/Pages/AbonnementenInfo";
 import AlgemeneVoorwaarden from "/src/Pages/AlgemeneVoorwaarden";
-import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst"
-import LoginForm from "./src/Components/LoginForm";
+import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst";
+import LoginForm from "/src/Components/LoginForm";
+import Aanvraag from "/src/Pages/Aanvraag";
 
 const App = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Home /> } />
+                <Route path="/" element={<Home />} />
                 <Route path="/Home" element={<Home />} />
                 <Route path="/Zakelijk" element={<Zakelijk />} />
                 <Route path="/Particulier" element={<Particulier />} />
@@ -27,11 +28,11 @@ const App = () => {
                 <Route path="/AbonnementenInfo" element={<AbonnementenInfo />} />
                 <Route path="/AlgemeneVoorwaarden" element={<AlgemeneVoorwaarden />} />
                 <Route path="/PrivacyOvereenkomst" element={<PrivacyOvereenkomst />} />
-
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/aanvraag" element={<Aanvraag />} />
             </Routes>
-        </BrowserRouter> 
+        </BrowserRouter>
     );
 };
 

@@ -5,7 +5,6 @@ import '/src/css/Zakelijk.css';
 import '/src/css/Home.css';
 
 const Zakelijk = () => {
-    //hello
     return (
         <div className="mainWrapper">
             <Navbar />  
@@ -13,10 +12,15 @@ const Zakelijk = () => {
                 <h1>Zakelijk huren met gemak</h1>
                 <p>Flexibele oplossingen voor bedrijven, van klein tot groot wagenparkbeheer.</p>
                 <div className="zakelijkButtons">
-                    <a href="/Register" className="btnPrimary">Bedrijf aanmelden</a>
+                    <a href="/Register" className="btnPrimary">Bedrijf registreren</a>
                     <a href="/Info" className="btnSecondary">Meer informatie</a>
                 </div>
             </div>
+            <section className="subscriptionSection">
+                <h2>Abonnementen beheren:</h2>
+                <br/>
+                <a href="/AbonnementenInfo" className="btnPrimary">Abonnement maken</a>
+            </section>
             <section className="benefitsSection">
                 <h2>Waarom Rent-It?</h2>
                 <div className="benefitsGrid">

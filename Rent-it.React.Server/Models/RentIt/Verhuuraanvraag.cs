@@ -1,24 +1,42 @@
-﻿namespace Rent_it.React.Server.Models.RentIt
-{
-    public class Verhuuraanvraag
-    {
-        private int verhuurID;
-        private int klantID;
-        private int voertuigID;
-        private int verwachteKilometers;
-        private int rijbewijsDocNr;
-        private string startDatum;
-        private string eindDatum;
-        private string status;
-        private string aardeVanReis;
-        private string versteBestemming;
+﻿using Rent_it.React.Server.Models.Klanten;
+using System.ComponentModel.DataAnnotations;
 
-        public void createAanvraag()
+namespace Rent_it.React.Server.Models.RentIt
+{
+    public class VerhuurAanvraag
+    {
+        [Key]
+        public int VerhuurID { get; set; } // Primary Key
+        public int KlantID { get; set; } // Foreign Key naar Klant
+        public int VoertuigID { get; set; } // Foreign Key naar Voertuig
+        [Required]
+        public int VerwachteKilometers { get; set; }
+        [Required]
+        public string RijbewijsDocNr { get; set; }
+        [Required]
+        public DateTime StartDatum { get; set; }
+        [Required]
+        public DateTime EindDatum { get; set; }
+        public string Status { get; set; } = "In behandeling"; // Default status
+        [Required]
+        public string AardeVanReis { get; set; }
+        [Required]
+        public string VersteBestemming { get; set; }
+
+        // Navigatie-eigenschappen
+        public Voertuig Voertuig { get; set; }
+        public Klant Klant { get; set; }
+
+        // Methode om aanvraag te maken
+        public void CreateAanvraag()
         {
+            Status = "In behandeling";
         }
 
-        public void updateStatus()
+        // Methode om status te updaten
+        public void UpdateStatus(string nieuweStatus)
         {
+            Status = nieuweStatus;
         }
     }
 }
