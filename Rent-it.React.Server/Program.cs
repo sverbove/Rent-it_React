@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Rent_it.React.Server.Data;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +18,8 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("https://localhost:7212")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         });
 });
 
@@ -33,6 +37,23 @@ builder.Services.AddAuthentication(options =>
 
     options.CallbackPath = "/api/Login/GoogleResponse";
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "https://localhost:5001",
+            ValidAudience = "https://localhost:5001",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yWQh0cBuUhwGdEq3iZj4p0Kcf24cRvCq"))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();

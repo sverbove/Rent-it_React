@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rent_it.React.Server.Data;
 
@@ -11,9 +12,11 @@ using Rent_it.React.Server.Data;
 namespace Rent_it.React.Server.Migrations
 {
     [DbContext(typeof(RentItDbContext))]
-    partial class RentItDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241215151719_AddPrimaryKey")]
+    partial class AddPrimaryKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,12 +33,12 @@ namespace Rent_it.React.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("AbonnementDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Abonnementsvorm")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AccountID")
-                        .HasColumnType("int");
 
                     b.Property<string>("Adres")
                         .IsRequired()
@@ -49,13 +52,7 @@ namespace Rent_it.React.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Startdatum")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountID")
-                        .IsUnique();
 
                     b.ToTable("Abonnementen");
                 });
@@ -136,17 +133,6 @@ namespace Rent_it.React.Server.Migrations
                     b.ToTable("Voertuigen");
                 });
 
-            modelBuilder.Entity("Rent_it.React.Server.Models.Bedrijven.Abonnement", b =>
-                {
-                    b.HasOne("Rent_it.React.Server.Models.Klanten.Account", "ParentAccount")
-                        .WithOne("Abonnement")
-                        .HasForeignKey("Rent_it.React.Server.Models.Bedrijven.Abonnement", "AccountID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ParentAccount");
-                });
-
             modelBuilder.Entity("Rent_it.React.Server.Models.Klanten.Account", b =>
                 {
                     b.HasOne("Rent_it.React.Server.Models.Klanten.Account", "ParentAccount")
@@ -158,9 +144,6 @@ namespace Rent_it.React.Server.Migrations
 
             modelBuilder.Entity("Rent_it.React.Server.Models.Klanten.Account", b =>
                 {
-                    b.Navigation("Abonnement")
-                        .IsRequired();
-
                     b.Navigation("Medewerkers");
                 });
 #pragma warning restore 612, 618

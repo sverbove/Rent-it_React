@@ -245,5 +245,18 @@ namespace Rent_it.React.Server.Data
                 }
             }
         }
+
+        /*private static void ClearSpecificTables(RentItDbContext context)
+        {
+            // Disable all foreign key constraints temporarily
+            context.Database.ExecuteSqlRaw("EXEC sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'");
+
+            // Delete data and reset primary key identity columns
+            context.Database.ExecuteSqlRaw("DELETE FROM dbo.Abonnementen; DBCC CHECKIDENT ('dbo.Abonnementen', RESEED, 0);");
+            context.Database.ExecuteSqlRaw("DELETE FROM dbo.Accounts; DBCC CHECKIDENT ('dbo.Accounts', RESEED, 0);");
+
+            // Re-enable foreign key constraints
+            context.Database.ExecuteSqlRaw("EXEC sp_MSforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'");
+        }*/
     }
 }

@@ -67,6 +67,7 @@ const AbonnementenInfo = () => {
         };
 
         try {
+            console.log("Sending data: ", abonnementData);
             const response = await fetch('/api/Abonnement', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
