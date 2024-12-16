@@ -13,8 +13,6 @@ import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst";
 import LoginForm from "/src/Components/LoginForm";
 import Aanvraag from "/src/Pages/Aanvraag";
 import Temp from "/src/Pages/Temp";
-import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst"
-import LoginForm from "./src/Components/LoginForm";
 import ProtectedRoute from "./src/Components/ProtectedRoute";
 import AddMedewerkerForm from "./src/Components/AddMedewerkerForm";
 
