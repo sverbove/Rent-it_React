@@ -73,6 +73,17 @@ const Navbar = () => {
                     cursor: 'pointer',
                     transition: 'background-color 0.3s',
                 }}>Contact</Link>
+                <Link to="/Temp" style={{
+                    textDecoration: 'none',
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    marginLeft: '20px',
+                    marginTop: '0px',
+                    color: '#000',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s',
+                }}>Temp</Link>
             </nav>
 
             <Link to="/Login" style={{

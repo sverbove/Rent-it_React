@@ -61,7 +61,7 @@ const RegisterForm = () => {
                 body: JSON.stringify(accountData),
             });
 
-            if(response.ok) {
+            if (response.ok) {
                 Swal.fire({
                     icon: "success",
                     title: "Registratie gelukt",
@@ -73,7 +73,7 @@ const RegisterForm = () => {
                 setPassword("");
                 setConfirmPassword("");
                 setUserType("Particuliere Klant");
-                
+
                 navigate("/login"); // Redirect to login page
             } else {
                 const errorMessage = await response.text();
@@ -83,7 +83,7 @@ const RegisterForm = () => {
                     title: "Registratie mislukt",
                     text: errorMessage || "Er is een fout opgetreden.",
                 });
-            }   
+            }
         } catch (error) {
             console.error("Registratiefout:", error);
             Swal.fire({

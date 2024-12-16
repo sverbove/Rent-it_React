@@ -9,6 +9,10 @@ import LogIn from "/src/Pages/LogIn";
 import Register from "/src/Pages/Register";
 import AbonnementenInfo from "/src/Pages/AbonnementenInfo";
 import AlgemeneVoorwaarden from "/src/Pages/AlgemeneVoorwaarden";
+import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst";
+import LoginForm from "/src/Components/LoginForm";
+import Aanvraag from "/src/Pages/Aanvraag";
+import Temp from "/src/Pages/Temp";
 import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst"
 import LoginForm from "./src/Components/LoginForm";
 import ProtectedRoute from "./src/Components/ProtectedRoute";
@@ -25,6 +29,7 @@ const App = () => {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<Home />} />
                 { /* Public Routes */ }
                 <Route path="/" element={<Home /> } />
                 <Route path="/Home" element={<Home />} />
@@ -36,6 +41,10 @@ const App = () => {
                 <Route path="/Register" element={<Register />} />
                 <Route path="/AlgemeneVoorwaarden" element={<AlgemeneVoorwaarden />} />
                 <Route path="/PrivacyOvereenkomst" element={<PrivacyOvereenkomst />} />
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/aanvraag" element={<Aanvraag />} />
+                <Route path="/Temp" element={<Temp />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />
 
@@ -50,7 +59,7 @@ const App = () => {
                     <Route path="/add-medewerker" element={<AddMedewerkerForm />} />
                 </Route>
             </Routes>
-        </BrowserRouter> 
+        </BrowserRouter>
     );
 };
 
