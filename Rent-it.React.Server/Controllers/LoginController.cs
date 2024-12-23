@@ -107,7 +107,7 @@ namespace Rent_It_project.Controllers
 
 
         /* Deze code staat uit (secret keys zijn weggehaald) */
-        [HttpGet("GoogleLogin")]
+        /*[HttpGet("GoogleLogin")]
         public async Task GoogleLogin()
         {
             var redirectUri = Url.Action("GoogleResponse", "Login", null, Request.Scheme);
@@ -136,6 +136,6 @@ namespace Rent_It_project.Controllers
             });
 
             return Ok(new { Message = "Google login succesful", Claims = claims });
-        }
+        }*/
     }
 }

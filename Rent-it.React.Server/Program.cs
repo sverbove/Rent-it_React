@@ -16,7 +16,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: AllowSpecificOrigin,
         policy =>
         {
-            policy.WithOrigins("https://localhost:7212")
+            policy.WithOrigins("https://localhost:7212", "https://localhost:57440")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
 });
 
 // Voeg services toe aan de container
-builder.Services.AddAuthentication(options =>
+/*builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
@@ -36,7 +36,7 @@ builder.Services.AddAuthentication(options =>
     options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
 
     options.CallbackPath = "/api/Login/GoogleResponse";
-});
+});*/
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Navbar from '/src/Components/Navbar';
 import Footer from '/src/Components/Footer';
@@ -14,6 +15,7 @@ const AbonnementenInfo = () => {
     });
 
     const [errors, setErrors] = useState('');
+    const navigate = useNavigate();
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlan(plan);
@@ -67,11 +69,17 @@ const AbonnementenInfo = () => {
         };
 
         try {
+            const token = localStorage.getItem('token');
+
             console.log("Sending data: ", abonnementData);
             const response = await fetch('/api/Abonnement', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(abonnementData)
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(abonnementData),
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -83,6 +91,8 @@ const AbonnementenInfo = () => {
                 });
                 setFormData({ bedrijfsnaam: '', adres: '', kvkNummer: '' });
                 setSelectedPlan('');
+
+                navigate("/zakelijk");
             } else {
                 Swal.fire({
                     icon: 'error',

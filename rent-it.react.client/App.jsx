@@ -13,8 +13,6 @@ import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst";
 import LoginForm from "/src/Components/LoginForm";
 import Aanvraag from "/src/Pages/Aanvraag";
 import Temp from "/src/Pages/Temp";
-import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst"
-import LoginForm from "./src/Components/LoginForm";
 import ProtectedRoute from "./src/Components/ProtectedRoute";
 import AddMedewerkerForm from "./src/Components/AddMedewerkerForm";
 
@@ -45,7 +43,6 @@ const App = () => {
                 <Route path="/home" element={<Home />} />
                 <Route path="/aanvraag" element={<Aanvraag />} />
                 <Route path="/Temp" element={<Temp />} />
-                <Route path="/login" element={<LoginForm />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />
 
                 {/* Protected Routes "Particuliere Klant" */}

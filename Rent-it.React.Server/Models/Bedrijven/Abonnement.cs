@@ -27,6 +27,6 @@ namespace Rent_it.React.Server.Models.Bedrijven
         public int AccountID { get; set; }
 
         [ForeignKey("AccountID")]
-        public Account ParentAccount { get; set; }
+        public Account? ParentAccount { get; set; }
     }
 }

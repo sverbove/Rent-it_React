@@ -62,7 +62,8 @@ const Zakelijk = () => {
 
             {canAddMedewerkers && (
                 <section className="addMedewerkerSection">
-                    <h2>Voeg medewerkers toe</h2>
+                    <h2>Voeg medewerker toe</h2>
+                    <p>Registreer hier een medewerker en voeg deze toe aan het gekozen abonnement</p>
                     <br />
                     <AddMedewerkerForm />
                 </section>
