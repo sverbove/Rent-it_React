@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Rent_it.React.Server.Data;
 using Rent_it.React.Server.Models.Klanten;
@@ -33,38 +36,78 @@ namespace Rent_It_project.Controllers
             }
 
             // Genereer token
-            //var token = GenerateJwtToken(user);
-
-            return Ok(new
-            {
-                gebruikersnaam = user.Gebruikersnaam,
-                //token = token
-            });
-        }
-
-        private string GenerateJwtToken(Account user)
-        {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Gebruikersnaam),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Rol),
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim("role", user.Rol)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(""));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yWQh0cBuUhwGdEq3iZj4p0Kcf24cRvCq"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "",
-                audience: "",
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds);
+            issuer: "https://localhost:5001",
+            audience: "https://localhost:5001",
+            claims: claims,
+            expires: DateTime.Now.AddHours(1),
+            signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                role = user.Rol
+            });
         }
 
-        [HttpGet("GoogleLogin")]
+        [HttpPost("add-medewerker-to-subscription")]
+        [Authorize(Roles = "Zakelijke Klant")]
+        public async Task<IActionResult> AddMedewerkerToSubscription([FromBody] AddMedewerkerDto medewerkerDto)
+        {
+            var parentAccountEmail = User.Identity.Name;
+            var parentAccount = await _context.Accounts
+                                              .Include(a => a.Abonnement)
+                                              .FirstOrDefaultAsync(a => a.Email == parentAccountEmail);
+
+            if (parentAccount == null || parentAccount.Abonnement == null)
+            {
+                return BadRequest("Zakelijke klant heeft geen abonnement.");
+            }
+
+            // Check for duplicate Medewerker email
+            if (await _context.Accounts.AnyAsync(a => a.Email == medewerkerDto.Email))
+            {
+                return BadRequest("Email is al in gebruik.");
+            }
+
+            // Create new Medewerker
+            var medewerker = new Account
+            {
+                Gebruikersnaam = medewerkerDto.Gebruikersnaam,
+                Email = medewerkerDto.Email,
+                Wachtwoord = BCrypt.Net.BCrypt.HashPassword(medewerkerDto.Wachtwoord), // Hash password
+                Rol = "Medewerker",
+                ParentAccountId = parentAccount.AccountID,
+                IsActief = true
+            };
+
+            _context.Accounts.Add(medewerker);
+            await _context.SaveChangesAsync();
+
+            return Ok($"Medewerker {medewerkerDto.Gebruikersnaam} is gekoppeld aan abonnement.");
+        }
+
+
+
+
+
+
+
+
+
+
+
+        /* Deze code staat uit (secret keys zijn weggehaald) */
+        /*[HttpGet("GoogleLogin")]
         public async Task GoogleLogin()
         {
             var redirectUri = Url.Action("GoogleResponse", "Login", null, Request.Scheme);
@@ -93,6 +136,6 @@ namespace Rent_It_project.Controllers
             });
 
             return Ok(new { Message = "Google login succesful", Claims = claims });
-        }
+        }*/
     }
 }

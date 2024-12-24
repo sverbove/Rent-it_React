@@ -1,5 +1,6 @@
+
 .info-container {
-    background-color: #D9D9D9; 
+    background-color: #D9D9D9;
     text-align: center;
 }
 
@@ -25,4 +26,43 @@
     flex: 1;
     text-align: left;
     height: 200px;
+}
+
+.extra-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 30px 0;
+    padding: 10px;
+    background-color: #D9D9D9;
+    border-radius: 8px;
+    flex-wrap: wrap;
+}
+
+.extra-card {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 300px;
+    text-align: left;
+}
+
+    .extra-card h2 {
+        font-size: 1.5em;
+        color: #000;
+        margin-bottom: 10px;
+    }
+
+    .extra-card p {
+        font-size: 1em;
+        color: #333;
+        line-height: 1.5;
+    }
+
+.contact-info {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
 }

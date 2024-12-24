@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '/src/css/LogIn.css';
+import { jwtDecode } from 'jwt-decode';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
@@ -10,9 +11,6 @@ const LoginForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Debug: Form submitted');
-        console.log('Debug: Email:', email);
-        console.log('Debug: Password:', password);
 
         try {
             const response = await fetch('/api/Login/Login', {
@@ -26,13 +24,14 @@ const LoginForm = () => {
             if (response.ok) {
                 const data = await response.json();
 
+                localStorage.setItem("token", data.token);
+                const decoded = jwtDecode(data.token);
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Login succesvol',
-                    text: `Welkom terug, ${data.gebruikersnaam}!`,
+                    text: `Welkom terug!`,
                 });
-
-                localStorage.setItem('token', data.token);
 
                 navigate('/home'); // Redirect to home page
             } else {
