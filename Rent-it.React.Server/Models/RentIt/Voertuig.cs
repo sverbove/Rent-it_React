@@ -33,7 +33,7 @@ namespace Rent_it.React.Server.Models.RentIt
         [Column(TypeName = "decimal(18,2)")]
         public decimal PrijsPerDag { get; set; } // Verhuurprijs per dag
 
-        public bool Beschikbaar { get; set; } = true;
+        public bool Beschikbaar { get; set; }
 
         // Navigatie-eigenschap
         // public ICollection<VerhuurAanvraag> VerhuurAanvragen { get; set; }

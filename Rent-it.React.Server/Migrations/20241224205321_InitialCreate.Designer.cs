@@ -12,8 +12,8 @@ using Rent_it.React.Server.Data;
 namespace Rent_it.React.Server.Migrations
 {
     [DbContext(typeof(RentItDbContext))]
-    [Migration("20241216100546_DbUpdateFix")]
-    partial class DbUpdateFix
+    [Migration("20241224205321_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,86 @@ namespace Rent_it.React.Server.Migrations
                     b.ToTable("Accounts");
                 });
 
+            modelBuilder.Entity("Rent_it.React.Server.Models.Klanten.Klant", b =>
+                {
+                    b.Property<int>("KlantID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KlantID"));
+
+                    b.Property<string>("Adres")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Naam")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RijbewijsDocNr")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TelNr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("KlantID");
+
+                    b.ToTable("Klant");
+                });
+
+            modelBuilder.Entity("Rent_it.React.Server.Models.RentIt.VerhuurAanvraag", b =>
+                {
+                    b.Property<int>("VerhuurID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VerhuurID"));
+
+                    b.Property<string>("AardeVanReis")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EindDatum")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("KlantID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RijbewijsDocNr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDatum")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VersteBestemming")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VerwachteKilometers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VoertuigID")
+                        .HasColumnType("int");
+
+                    b.HasKey("VerhuurID");
+
+                    b.HasIndex("KlantID");
+
+                    b.HasIndex("VoertuigID");
+
+                    b.ToTable("VerhuurAanvragen");
+                });
+
             modelBuilder.Entity("Rent_it.React.Server.Models.RentIt.Voertuig", b =>
                 {
                     b.Property<int>("VoertuigId")
@@ -116,23 +196,31 @@ namespace Rent_it.React.Server.Migrations
 
                     b.Property<string>("Kenteken")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Kleur")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Merk")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("PrijsPerDag")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Soort")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("VoertuigId");
 
@@ -157,6 +245,25 @@ namespace Rent_it.React.Server.Migrations
                         .HasForeignKey("ParentAccountId");
 
                     b.Navigation("ParentAccount");
+                });
+
+            modelBuilder.Entity("Rent_it.React.Server.Models.RentIt.VerhuurAanvraag", b =>
+                {
+                    b.HasOne("Rent_it.React.Server.Models.Klanten.Klant", "Klant")
+                        .WithMany()
+                        .HasForeignKey("KlantID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rent_it.React.Server.Models.RentIt.Voertuig", "Voertuig")
+                        .WithMany()
+                        .HasForeignKey("VoertuigID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Klant");
+
+                    b.Navigation("Voertuig");
                 });
 
             modelBuilder.Entity("Rent_it.React.Server.Models.Klanten.Account", b =>

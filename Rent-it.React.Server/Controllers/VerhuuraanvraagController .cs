@@ -1,181 +1,255 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Rent_it.React.Server.Models.RentIt;
-using Rent_it.React.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Rent_it.React.Server.Models.RentIt;
+using Rent_it.React.Server.Data;
 
 namespace Rent_it.React.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class VerhuuraanvraagController : ControllerBase
+    public class VerhuurAanvraagController : ControllerBase
     {
         private readonly RentItDbContext _context;
+        private readonly ILogger<VerhuurAanvraagController> _logger;
 
-        public VerhuuraanvraagController(RentItDbContext context)
+        public VerhuurAanvraagController(RentItDbContext context, ILogger<VerhuurAanvraagController> logger)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        // Endpoint: Filter en haal voertuigen op
+        // GET: api/VerhuurAanvraag/Voertuigen
         [HttpGet("Voertuigen")]
-        public async Task<IActionResult> GetVoertuigen(
-            [FromQuery] string type,
-            [FromQuery] string merk,
-            [FromQuery] decimal? maxPrijs,
-            [FromQuery] DateTime? startDatum,
-            [FromQuery] DateTime? eindDatum,
-            [FromQuery] string sorteerOp)
+        public async Task<ActionResult<IEnumerable<Voertuig>>> GetVoertuigen(
+            [FromQuery] string soort = "",
+            [FromQuery] string merk = "",
+            [FromQuery] decimal? maxPrijs = null,
+            [FromQuery] DateTime? startDatum = null,
+            [FromQuery] DateTime? eindDatum = null,
+            [FromQuery] string sorteerOp = "")
         {
             try
             {
-                var query = _context.Voertuigen.AsQueryable();
+                _logger.LogInformation($"Zoeken naar voertuigen: Soort={soort}, Merk={merk}, MaxPrijs={maxPrijs}, StartDatum={startDatum}, EindDatum={eindDatum}");
 
-                if (!string.IsNullOrEmpty(type))
-                    query = query.Where(v => v.Soort == type);
+                var query = _context.Voertuigen
+                    .Where(v => v.Beschikbaar); // Alleen beschikbare voertuigen
 
-                if (!string.IsNullOrEmpty(merk))
-                    query = query.Where(v => v.Merk == merk);
+                // Filters toepassen
+                if (!string.IsNullOrWhiteSpace(soort))
+                {
+                    query = query.Where(v => v.Soort.ToLower() == soort.ToLower());
+                }
 
-                if (maxPrijs.HasValue)
+                if (!string.IsNullOrWhiteSpace(merk))
+                {
+                    query = query.Where(v => v.Merk.ToLower().Contains(merk.ToLower()));
+                }
+
+                if (maxPrijs.HasValue && maxPrijs > 0)
+                {
                     query = query.Where(v => v.PrijsPerDag <= maxPrijs.Value);
-
-                if (startDatum.HasValue && eindDatum.HasValue && startDatum <= eindDatum)
-                {
-                    query = query.Where(v => !_context.VerhuurAanvragen.Any(a =>
-                        a.VoertuigID == v.VoertuigId &&
-                        ((a.StartDatum <= startDatum && a.EindDatum >= startDatum) ||
-                         (a.StartDatum <= eindDatum && a.EindDatum >= eindDatum))));
                 }
 
-                if (!string.IsNullOrEmpty(sorteerOp))
+                // Beschikbaarheidscheck voor de gevraagde periode
+                if (startDatum.HasValue && eindDatum.HasValue)
                 {
-                    query = sorteerOp.ToLower() switch
+                    if (startDatum.Value > eindDatum.Value)
                     {
-                        "prijs" => query.OrderBy(v => v.PrijsPerDag),
-                        "merk" => query.OrderBy(v => v.Merk),
-                        "type" => query.OrderBy(v => v.Soort),
-                        _ => query
-                    };
+                        return BadRequest(new { message = "Startdatum moet voor einddatum liggen." });
+                    }
+
+                    if (startDatum.Value.Date < DateTime.Now.Date)
+                    {
+                        return BadRequest(new { message = "Startdatum kan niet in het verleden liggen." });
+                    }
+
+                    query = query.Where(v => !_context.VerhuurAanvragen
+                        .Any(a => a.VoertuigID == v.VoertuigId &&
+                                a.Status != "Geannuleerd" &&
+                                ((startDatum <= a.EindDatum && eindDatum >= a.StartDatum) ||
+                                 (a.StartDatum <= eindDatum && a.EindDatum >= startDatum))));
                 }
+
+                // Sortering toepassen
+                query = sorteerOp?.ToLower() switch
+                {
+                    "prijs" => query.OrderBy(v => v.PrijsPerDag),
+                    "prijsdesc" => query.OrderByDescending(v => v.PrijsPerDag),
+                    "merk" => query.OrderBy(v => v.Merk),
+                    "soort" => query.OrderBy(v => v.Soort),
+                    _ => query.OrderBy(v => v.VoertuigId)
+                };
 
                 var voertuigen = await query.ToListAsync();
+                _logger.LogInformation($"Aantal gevonden voertuigen: {voertuigen.Count}");
+
                 return Ok(voertuigen);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Er is een fout opgetreden bij het ophalen van voertuigen.", Error = ex.Message });
+                _logger.LogError(ex, "Fout bij ophalen voertuigen");
+                return StatusCode(500, new { message = "Er is een fout opgetreden bij het ophalen van voertuigen." });
             }
         }
 
-        // Endpoint: Maak een nieuwe verhuuraanvraag
+        // POST: api/VerhuurAanvraag/Aanvraag
         [HttpPost("Aanvraag")]
-        public async Task<IActionResult> CreateAanvraag([FromBody] VerhuurAanvraag aanvraag)
+        public async Task<ActionResult<VerhuurAanvraag>> CreateAanvraag([FromBody] VerhuurAanvraag aanvraag)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             try
             {
-                var isBeschikbaar = !_context.VerhuurAanvragen.Any(a =>
-                    a.VoertuigID == aanvraag.VoertuigID &&
-                    ((a.StartDatum <= aanvraag.StartDatum && a.EindDatum >= aanvraag.StartDatum) ||
-                     (a.StartDatum <= aanvraag.EindDatum && a.EindDatum >= aanvraag.EindDatum)));
-
-                if (!isBeschikbaar)
+                // Basisvalidaties
+                if (aanvraag.StartDatum > aanvraag.EindDatum)
                 {
-                    return BadRequest(new { Message = "Het geselecteerde voertuig is niet beschikbaar voor de gekozen periode." });
+                    return BadRequest(new { message = "Startdatum moet voor einddatum liggen." });
                 }
 
+                if (aanvraag.StartDatum.Date < DateTime.Now.Date)
+                {
+                    return BadRequest(new { message = "Startdatum mag niet in het verleden liggen." });
+                }
+
+                // Voertuig ophalen en controleren
+                var voertuig = await _context.Voertuigen
+                    .FirstOrDefaultAsync(v => v.VoertuigId == aanvraag.VoertuigID);
+
+                if (voertuig == null)
+                {
+                    return NotFound(new { message = "Voertuig niet gevonden." });
+                }
+
+                if (!voertuig.Beschikbaar)
+                {
+                    return BadRequest(new { message = "Dit voertuig is niet beschikbaar voor verhuur." });
+                }
+
+                // Beschikbaarheid voor de periode controleren
+                var isVoertuigBeschikbaar = !await _context.VerhuurAanvragen
+                    .AnyAsync(a => a.VoertuigID == aanvraag.VoertuigID &&
+                                 a.Status != "Geannuleerd" &&
+                                 ((aanvraag.StartDatum <= a.EindDatum && aanvraag.EindDatum >= a.StartDatum) ||
+                                  (a.StartDatum <= aanvraag.EindDatum && a.EindDatum >= aanvraag.StartDatum)));
+
+                if (!isVoertuigBeschikbaar)
+                {
+                    return BadRequest(new { message = "Het voertuig is niet beschikbaar in de gekozen periode." });
+                }
+
+                // Kilometers validatie
                 if (aanvraag.VerwachteKilometers <= 0 || aanvraag.VerwachteKilometers > 5000)
-                    return BadRequest(new { Message = "Verwachte kilometers moeten tussen 1 en 5000 liggen." });
+                {
+                    return BadRequest(new { message = "Verwachte kilometers moeten tussen 1 en 5000 liggen." });
+                }
 
-                if (aanvraag.StartDatum < DateTime.Now || aanvraag.EindDatum < DateTime.Now)
-                    return BadRequest(new { Message = "Datums mogen niet in het verleden liggen." });
-
-                aanvraag.Status = "In behandeling";
+                // Aanvraag verwerken
+                aanvraag.CreateAanvraag();
                 _context.VerhuurAanvragen.Add(aanvraag);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { Message = "Aanvraag succesvol ingediend", Aanvraag = aanvraag });
+                _logger.LogInformation($"Nieuwe verhuuraanvraag gecreëerd: ID={aanvraag.VerhuurID}");
+
+                return CreatedAtAction(nameof(GetAanvragen), new { id = aanvraag.VerhuurID }, aanvraag);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Er is een fout opgetreden bij het indienen van de aanvraag.", Error = ex.Message });
+                _logger.LogError(ex, "Fout bij maken nieuwe aanvraag");
+                return StatusCode(500, new { message = "Er is een fout opgetreden bij het indienen van de aanvraag." });
             }
         }
 
-        // Endpoint: Haal alle verhuuraanvragen van een klant op
+        // GET: api/VerhuurAanvraag/Aanvragen
         [HttpGet("Aanvragen")]
-        public async Task<IActionResult> GetAanvragen([FromQuery] int klantID, [FromQuery] string status)
+        public async Task<ActionResult<IEnumerable<VerhuurAanvraag>>> GetAanvragen(
+            [FromQuery] int klantId,
+            [FromQuery] string status = "")
         {
             try
             {
-                var aanvragen = _context.VerhuurAanvragen
+                var query = _context.VerhuurAanvragen
                     .Include(a => a.Voertuig)
-                    .AsQueryable();
+                    .Where(a => a.KlantID == klantId);
 
-                aanvragen = aanvragen.Where(a => a.KlantID == klantID);
-
-                if (!string.IsNullOrEmpty(status))
+                if (!string.IsNullOrWhiteSpace(status))
                 {
-                    aanvragen = aanvragen.Where(a => a.Status == status);
+                    query = query.Where(a => a.Status == status);
                 }
 
-                var result = await aanvragen.ToListAsync();
-                return Ok(result);
+                var aanvragen = await query
+                    .OrderByDescending(a => a.StartDatum)
+                    .ToListAsync();
+
+                return Ok(aanvragen);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Er is een fout opgetreden bij het ophalen van aanvragen.", Error = ex.Message });
+                _logger.LogError(ex, $"Fout bij ophalen aanvragen voor klant {klantId}");
+                return StatusCode(500, new { message = "Er is een fout opgetreden bij het ophalen van de aanvragen." });
             }
         }
 
-        // Endpoint: Annuleer een aanvraag
-        [HttpPatch("Annuleer/{id}")]
-        public async Task<IActionResult> AnnuleerAanvraag(int id)
+        // GET: api/VerhuurAanvraag/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<VerhuurAanvraag>> GetAanvraag(int id)
         {
             try
             {
-                var aanvraag = await _context.VerhuurAanvragen.FindAsync(id);
+                var aanvraag = await _context.VerhuurAanvragen
+                    .Include(a => a.Voertuig)
+                    .FirstOrDefaultAsync(a => a.VerhuurID == id);
+
                 if (aanvraag == null)
-                    return NotFound(new { Message = "Aanvraag niet gevonden" });
+                {
+                    return NotFound(new { message = "Aanvraag niet gevonden." });
+                }
 
-                aanvraag.Status = "Geannuleerd";
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Message = "Aanvraag succesvol geannuleerd", Aanvraag = aanvraag });
+                return Ok(aanvraag);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Er is een fout opgetreden bij het annuleren van de aanvraag.", Error = ex.Message });
+                _logger.LogError(ex, $"Fout bij ophalen aanvraag {id}");
+                return StatusCode(500, new { message = "Er is een fout opgetreden bij het ophalen van de aanvraag." });
             }
         }
 
-        // Endpoint: Werk de status van een aanvraag bij
+        // PATCH: api/VerhuurAanvraag/UpdateStatus/{id}
         [HttpPatch("UpdateStatus/{id}")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string nieuweStatus)
         {
             try
             {
                 var aanvraag = await _context.VerhuurAanvragen.FindAsync(id);
                 if (aanvraag == null)
-                    return NotFound(new { Message = "Aanvraag niet gevonden" });
+                {
+                    return NotFound(new { message = "Aanvraag niet gevonden." });
+                }
 
                 var geldigeStatussen = new[] { "In behandeling", "Goedgekeurd", "Afgewezen", "Geannuleerd" };
-                if (!geldigeStatussen.Contains(status))
-                    return BadRequest(new { Message = "Ongeldige statuswaarde." });
+                if (!geldigeStatussen.Contains(nieuweStatus))
+                {
+                    return BadRequest(new { message = "Ongeldige status." });
+                }
 
-                aanvraag.Status = status;
+                aanvraag.UpdateStatus(nieuweStatus);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { Message = "Status bijgewerkt", Aanvraag = aanvraag });
+                _logger.LogInformation($"Status van aanvraag {id} bijgewerkt naar {nieuweStatus}");
+
+                return Ok(new { message = "Status succesvol bijgewerkt" });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Er is een fout opgetreden bij het bijwerken van de status.", Error = ex.Message });
+                _logger.LogError(ex, $"Fout bij updaten status van aanvraag {id}");
+                return StatusCode(500, new { message = "Er is een fout opgetreden bij het bijwerken van de status." });
             }
         }
     }
