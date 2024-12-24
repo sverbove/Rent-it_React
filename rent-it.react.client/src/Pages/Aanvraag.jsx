@@ -6,6 +6,7 @@ import "/src/css/Aanvraag.css";
 const Aanvraag = () => {
     const [voertuigType, setVoertuigType] = useState("Auto's");
     const [merk, setMerk] = useState("");
+    const [beschikbareMerken, setBeschikbareMerken] = useState([]);
     const [maxPrijs, setMaxPrijs] = useState("");
     const [startDatum, setStartDatum] = useState("");
     const [eindDatum, setEindDatum] = useState("");
@@ -19,6 +20,25 @@ const Aanvraag = () => {
     const [totaalPrijs, setTotaalPrijs] = useState(0);
     const [sortOption, setSortOption] = useState("");
     const [loading, setLoading] = useState(false);
+
+    // Merken per type voertuig
+    const merkenPerType = {
+        "Auto's": [
+            "Adria", "Audi", "BMW", "Citroen", "Fiat", "Ford", "Honda", "Hyundai", "Jeep", "Kia", "Land Rover", "Mazda", "Mercedes", "Mitsubishi", "Nissan", "Opel", "Peugeot", "Renault", "Skoda", "Subaru", "Suzuki", "Toyota", "Volkswagen", "Volvo"
+        ],
+        Caravans: [
+            "Adria", "Bailey", "Buccaneer", "Burstner", "Caravelair", "Coachman", "Compass", "Dethleffs", "Eriba", "Fendt", "Hobby", "Knaus", "LMC", "Lunar", "Sprite", "Sterckeman", "Swift", "Tab", "Tabbert"
+        ],
+        Campers: [
+            "Citroen", "Fiat", "Ford", "Iveco", "Mercedes", "Nissan", "Opel", "Peugeot", "Renault", "Volkswagen"
+        ]
+    };
+
+    // Update beschikbare merken bij veranderen voertuigtype
+    useEffect(() => {
+        setBeschikbareMerken(merkenPerType[voertuigType] || []);
+        setMerk(""); // Reset geselecteerd merk
+    }, [voertuigType]);
 
     // Bereken totaalprijs
     useEffect(() => {
@@ -113,14 +133,25 @@ const Aanvraag = () => {
                     <label>
                         Type voertuig:
                         <select value={voertuigType} onChange={(e) => setVoertuigType(e.target.value)}>
-                            <option value="Auto's">Autos</option>
+                            <option value="Auto's">Auto's</option>
                             <option value="Campers">Campers</option>
                             <option value="Caravans">Caravans</option>
                         </select>
                     </label>
                     <label>
                         Merk (optioneel):
-                        <input type="text" value={merk} onChange={(e) => setMerk(e.target.value)} placeholder="Bijv. Toyota" />
+                        <select
+                            value={merk}
+                            onChange={(e) => setMerk(e.target.value)}
+                            disabled={beschikbareMerken.length === 0}
+                        >
+                            <option value="">Selecteer een merk</option>
+                            {beschikbareMerken.map((m, index) => (
+                                <option key={index} value={m}>
+                                    {m}
+                                </option>
+                            ))}
+                        </select>
                     </label>
                     <label>
                         Maximale prijs (optioneel):
