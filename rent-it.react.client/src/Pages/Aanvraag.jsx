@@ -4,7 +4,6 @@ import Footer from "/src/Components/Footer";
 import "/src/css/Aanvraag.css";
 
 const Aanvraag = () => {
-    // Bestaande state
     const [voertuigType, setVoertuigType] = useState("Auto's");
     const [merk, setMerk] = useState("");
     const [maxPrijs, setMaxPrijs] = useState("");
@@ -19,8 +18,6 @@ const Aanvraag = () => {
     const [status, setStatus] = useState("");
     const [sortOption, setSortOption] = useState("");
     const [loading, setLoading] = useState(false);
-
-    // Nieuwe state voor uitgebreide functionaliteit
     const [voorwaardenGeaccepteerd, setVoorwaardenGeaccepteerd] = useState(false);
     const [prijsDetails, setPrijsDetails] = useState({
         basisHuur: 0,
@@ -71,23 +68,7 @@ const Aanvraag = () => {
     };
 
     const validateAanvraag = () => {
-        // Valideer datums
-        if (!startDatum || !eindDatum) {
-            setStatus("Selecteer een start- en einddatum");
-            return false;
-        }
-
-        if (new Date(startDatum) < new Date()) {
-            setStatus("Startdatum mag niet in het verleden liggen");
-            return false;
-        }
-
-        if (new Date(startDatum) >= new Date(eindDatum)) {
-            setStatus("Einddatum moet na startdatum liggen");
-            return false;
-        }
-
-        // Valideer rijbewijs
+        
         if (!rijbewijsDocNr || rijbewijsDocNr.length < 8) {
             setStatus("Vul een geldig rijbewijsnummer in");
             return false;
@@ -136,35 +117,39 @@ const Aanvraag = () => {
         }
 
         try {
+
+
             const aanvraagData = {
                 voertuigID: geselecteerdVoertuig.voertuigId,
-                startDatum,
-                eindDatum,
+                klantID: 1,
+                startDatum: new Date(startDatum).toISOString(),
+                eindDatum: new Date(eindDatum).toISOString(),
                 rijbewijsDocNr,
                 aardeVanReis,
                 versteBestemming,
                 verwachteKilometers: parseInt(verwachteKilometers),
-                voorwaardenGeaccepteerd,
-                prijsDetails,
-                status: "In behandeling",
+                status: "In behandeling"
             };
+            
 
             const response = await fetch("/api/VerhuurAanvraag/Aanvraag", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify(aanvraagData),
             });
 
-            if (response.ok) {
-                setStatus("Aanvraag succesvol ingediend! U ontvangt een bevestigingsmail.");
-                resetForm();
-            } else {
+            if (!response.ok) {
                 const errorData = await response.json();
-                setStatus(errorData.message || "Er is een fout opgetreden.");
+                throw new Error(errorData.message || 'Er is een fout opgetreden');
             }
+
+            const result = await response.json();
+            setStatus("Aanvraag succesvol ingediend! AanvraagNummer: " + result.verhuurId);
+            resetForm();
         } catch (error) {
-            console.error("Fout bij indienen aanvraag:", error);
-            setStatus("Er is een fout opgetreden bij het indienen van uw aanvraag.");
+            setStatus(`Error: ${error.message}`);
         }
     };
 

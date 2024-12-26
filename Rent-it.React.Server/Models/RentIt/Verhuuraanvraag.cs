@@ -1,5 +1,6 @@
 ﻿using Rent_it.React.Server.Models.Klanten;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Rent_it.React.Server.Models.RentIt
 {
@@ -8,30 +9,35 @@ namespace Rent_it.React.Server.Models.RentIt
         [Key]
         public int VerhuurID { get; set; } // Primary Key
         public int KlantID { get; set; } // Foreign Key naar Klant
-        public int VoertuigID { get; set; } // Foreign Key naar Voertuig
-        [Required]
-        public int VerwachteKilometers { get; set; }
-        [Required]
-        public string RijbewijsDocNr { get; set; }
+        public int VoertuigID { get; set; }// Foreign Key naar Voertuig
+
         [Required]
         public DateTime StartDatum { get; set; }
         [Required]
         public DateTime EindDatum { get; set; }
-        public string Status { get; set; } = "In behandeling"; // Default status
+        [Required]
+        [MinLength(8)]
+        public string RijbewijsDocNr { get; set; }
         [Required]
         public string AardeVanReis { get; set; }
+
         [Required]
         public string VersteBestemming { get; set; }
+        [Required]
+        [Range(1, int.MaxValue)]
+        public int VerwachteKilometers { get; set; }
+        
+        
+        public string Status { get; set; } = "In behandeling"; // Default status
 
-        // Navigatie-eigenschappen
+
+
+        [JsonIgnore]
         public Voertuig Voertuig { get; set; }
+        [JsonIgnore]
         public Klant Klant { get; set; }
 
-        // Methode om aanvraag te maken
-        public void CreateAanvraag()
-        {
-            Status = "In behandeling";
-        }
+        
 
         // Methode om status te updaten
         public void UpdateStatus(string nieuweStatus)

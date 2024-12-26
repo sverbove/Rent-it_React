@@ -99,7 +99,7 @@ namespace Rent_it.React.Server.Controllers
 
         // POST: api/VerhuurAanvraag/Aanvraag
         [HttpPost("Aanvraag")]
-        public async Task<ActionResult<VerhuurAanvraag>> CreateAanvraag([FromBody] VerhuurAanvraag aanvraag)
+        public async Task<ActionResult<VerhuurAanvraag>> CreateVerhuurAanvraag([FromBody] VerhuurAanvraag aanvraag)
         {
             if (!ModelState.IsValid)
             {
@@ -108,64 +108,72 @@ namespace Rent_it.React.Server.Controllers
 
             try
             {
-                // Basisvalidaties
-                if (aanvraag.StartDatum > aanvraag.EindDatum)
-                {
-                    return BadRequest(new { message = "Startdatum moet voor einddatum liggen." });
-                }
-
-                if (aanvraag.StartDatum.Date < DateTime.Now.Date)
-                {
-                    return BadRequest(new { message = "Startdatum mag niet in het verleden liggen." });
-                }
-
-                // Voertuig ophalen en controleren
-                var voertuig = await _context.Voertuigen
-                    .FirstOrDefaultAsync(v => v.VoertuigId == aanvraag.VoertuigID);
-
+                var voertuig = await _context.Voertuigen.FindAsync(aanvraag.VoertuigID);
                 if (voertuig == null)
                 {
-                    return NotFound(new { message = "Voertuig niet gevonden." });
+                    return NotFound("Voertuig niet gevonden");
                 }
 
-                if (!voertuig.Beschikbaar)
-                {
-                    return BadRequest(new { message = "Dit voertuig is niet beschikbaar voor verhuur." });
-                }
-
-                // Beschikbaarheid voor de periode controleren
-                var isVoertuigBeschikbaar = !await _context.VerhuurAanvragen
-                    .AnyAsync(a => a.VoertuigID == aanvraag.VoertuigID &&
-                                 a.Status != "Geannuleerd" &&
-                                 ((aanvraag.StartDatum <= a.EindDatum && aanvraag.EindDatum >= a.StartDatum) ||
-                                  (a.StartDatum <= aanvraag.EindDatum && a.EindDatum >= aanvraag.StartDatum)));
-
-                if (!isVoertuigBeschikbaar)
-                {
-                    return BadRequest(new { message = "Het voertuig is niet beschikbaar in de gekozen periode." });
-                }
-
-                // Kilometers validatie
-                if (aanvraag.VerwachteKilometers <= 0 || aanvraag.VerwachteKilometers > 5000)
-                {
-                    return BadRequest(new { message = "Verwachte kilometers moeten tussen 1 en 5000 liggen." });
-                }
-
-                // Aanvraag verwerken
-                aanvraag.CreateAanvraag();
+                aanvraag.Status = "In behandeling";
                 _context.VerhuurAanvragen.Add(aanvraag);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation($"Nieuwe verhuuraanvraag gecreëerd: ID={aanvraag.VerhuurID}");
-
-                return CreatedAtAction(nameof(GetAanvragen), new { id = aanvraag.VerhuurID }, aanvraag);
+                return Ok(new
+                {
+                    verhuurId = aanvraag.VerhuurID,
+                    message = "Aanvraag succesvol ingediend"
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Fout bij maken nieuwe aanvraag");
-                return StatusCode(500, new { message = "Er is een fout opgetreden bij het indienen van de aanvraag." });
+                return StatusCode(500, new { message = "Er is een fout opgetreden bij het verwerken van uw aanvraag." });
             }
         }
+
+        private async Task<bool> ValidateAanvraag(VerhuurAanvraag aanvraag)
+        {
+            // Basisvalidatie
+            if (aanvraag == null ||
+                string.IsNullOrWhiteSpace(aanvraag.RijbewijsDocNr) ||
+                string.IsNullOrWhiteSpace(aanvraag.AardeVanReis) ||
+                string.IsNullOrWhiteSpace(aanvraag.VersteBestemming) ||
+                aanvraag.VerwachteKilometers <= 0)
+            {
+                return false;
+            }
+
+            // Rijbewijs validatie
+            if (aanvraag.RijbewijsDocNr.Length < 8)
+            {
+                return false;
+            }
+
+            // Datum validatie
+            if (aanvraag.StartDatum >= aanvraag.EindDatum ||
+                aanvraag.StartDatum.Date < DateTime.Now.Date)
+            {
+                return false;
+            }
+
+            // Voertuig beschikbaarheid check
+            var voertuig = await _context.Voertuigen
+                .FirstOrDefaultAsync(v => v.VoertuigId == aanvraag.VoertuigID && v.Beschikbaar);
+
+            if (voertuig == null)
+            {
+                return false;
+            }
+
+            // Check voor overlappende reserveringen
+            var bestaandeReservering = await _context.VerhuurAanvragen
+                .AnyAsync(v => v.VoertuigID == aanvraag.VoertuigID &&
+                              v.Status != "Geannuleerd" &&
+                              ((aanvraag.StartDatum <= v.EindDatum && aanvraag.EindDatum >= v.StartDatum) ||
+                               (v.StartDatum <= aanvraag.EindDatum && v.EindDatum >= aanvraag.StartDatum)));
+
+            return !bestaandeReservering;
+        }
+    
 
         // GET: api/VerhuurAanvraag/Aanvragen
         [HttpGet("Aanvragen")]
