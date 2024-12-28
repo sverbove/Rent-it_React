@@ -33,9 +33,9 @@ namespace Rent_it.React.Server.Models.RentIt
 
 
         [JsonIgnore]
-        public Voertuig Voertuig { get; set; }
+        public Voertuig? Voertuig { get; set; }
         [JsonIgnore]
-        public Klant Klant { get; set; }
+        public Klant? Klant { get; set; }
 
         
 
