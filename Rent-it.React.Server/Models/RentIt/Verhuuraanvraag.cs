@@ -1,5 +1,6 @@
 ﻿using Rent_it.React.Server.Models.Klanten;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Rent_it.React.Server.Models.RentIt
@@ -7,8 +8,9 @@ namespace Rent_it.React.Server.Models.RentIt
     public class VerhuurAanvraag
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int VerhuurID { get; set; } // Primary Key
-        public int KlantID { get; set; } // Foreign Key naar Klant
+        public int AccountId { get; set; } // Foreign Key naar Klant
         public int VoertuigID { get; set; }// Foreign Key naar Voertuig
 
         [Required]
@@ -33,9 +35,9 @@ namespace Rent_it.React.Server.Models.RentIt
 
 
         [JsonIgnore]
-        public Voertuig Voertuig { get; set; }
+        public virtual Voertuig Voertuig { get; set; }
         [JsonIgnore]
-        public Klant Klant { get; set; }
+        public virtual Account Account { get; set; }
 
         
 
