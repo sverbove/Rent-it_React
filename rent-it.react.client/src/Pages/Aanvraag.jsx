@@ -7,7 +7,7 @@ import "/src/css/Aanvraag.css";
 const Aanvraag = () => {
     const [voertuigType, setVoertuigType] = useState("Auto's");
     const [merk, setMerk] = useState("");
-    const [maxPrijs, setMaxPrijs] = useState("");
+    const [maxPrijs, setMaxPrijs] = useState("250");
     const [startDatum, setStartDatum] = useState("");
     const [eindDatum, setEindDatum] = useState("");
     const [verwachteKilometers, setVerwachteKilometers] = useState("");
@@ -286,7 +286,7 @@ const Aanvraag = () => {
                                         <div className="vehicle-header">
                                             <h3 className="vehicle-title">
                                                 {voertuig.merk} {voertuig.type}
-                                                <span className="vehicle-price-tag">€{voertuig.prijsPerDag}/dag</span>
+                                                <span className="vehicle-price-tag">{"\u20AC"}{voertuig.prijsPerDag}/dag</span>
                                             </h3>
                                         </div>
                                         <div className="vehicle-details">
@@ -331,25 +331,25 @@ const Aanvraag = () => {
                                 <div className="price-grid">
                                     <div className="price-item">
                                         <span>Huurprijs</span>
-                                        <span>€{prijsDetails.basisHuur.toFixed(2)}</span>
+                                        <span>{"\u20AC"}{prijsDetails.basisHuur.toFixed(2)}</span>
                                     </div>
                                     <div className="price-item">
                                         <span>Verzekering</span>
-                                        <span>€{prijsDetails.verzekering.toFixed(2)}</span>
+                                        <span>{"\u20AC"}{prijsDetails.verzekering.toFixed(2)}</span>
                                     </div>
                                     {prijsDetails.extraKmKosten > 0 && (
                                         <div className="price-item">
                                             <span>Extra kilometers</span>
-                                            <span>€{prijsDetails.extraKmKosten.toFixed(2)}</span>
+                                            <span>{"\u20AC"}{prijsDetails.extraKmKosten.toFixed(2)}</span>
                                         </div>
                                     )}
                                     <div className="price-item">
                                         <span>Borg</span>
-                                        <span>€{prijsDetails.borg.toFixed(2)}</span>
+                                        <span>{"\u20AC"}{prijsDetails.borg.toFixed(2)}</span>
                                     </div>
                                     <div className="price-item total">
                                         <span>Totaal</span>
-                                        <span>€{prijsDetails.totaal.toFixed(2)}</span>
+                                        <span>{"\u20AC"}{prijsDetails.totaal.toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -367,7 +367,7 @@ const Aanvraag = () => {
                                 <ul>
                                     <li>Minimumleeftijd: 21 jaar</li>
                                     <li>Rijbewijs minimaal 1 jaar</li>
-                                    <li>Borg: €{prijsDetails.borg.toFixed(2)}</li>
+                                    <li>Borg: {"\u20AC"}{prijsDetails.borg.toFixed(2)}</li>
                                 </ul>
                             </div>
 

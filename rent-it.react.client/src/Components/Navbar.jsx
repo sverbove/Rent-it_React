@@ -1,7 +1,21 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        setIsLoggedIn(!!token);
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        setIsLoggedIn(false);
+        navigate("/Home");
+    };
+
     return (
         <header style={{ position: top, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', backgroundColor: '#D9D9D9' }}>
             {/* Logo */}
@@ -86,18 +100,57 @@ const Navbar = () => {
                 }}>Temp</Link>
             </nav>
 
-            <Link to="/Login" style={{
-                textDecoration: 'none',
-                fontSize: '24px',
-                fontWeight: 'bold',
-                marginRight: '10px',
-                marginTop: '0px',
-                color: '#000',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s',
-                marginLeft: 'auto',
-            }}>Log In</Link>
+            {/* Render login OR logout button */}
+            {isLoggedIn ? (
+                <button
+                    onClick={handleLogout}
+                    style={{
+                        textDecoration: "none",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        marginRight: "10px",
+                        marginTop: "0px",
+                        padding: "10px 20px",
+                        color: "#fff",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        marginLeft: "auto",
+                        backgroundColor: "#D9534F",
+                        border: "none",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                        transition: "transform 0.2s, background-color 0.3s",
+                    }}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#C9302C")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "#D9534F")}
+                    onFocus={(e) => (e.target.style.backgroundColor = "#C9302C")}
+                >
+                    Log Out
+                </button>
+            ) : (
+                <Link
+                    to="/Login"
+                    style={{
+                        textDecoration: "none",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        marginRight: "10px",
+                        marginTop: "0px",
+                        padding: "10px 20px",
+                        color: "#454545",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        marginLeft: "auto",
+                        backgroundColor: "#B9B9B9",
+                        border: "none",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                        transition: "transform 0.2s, background-color 0.3s",
+                    }}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = "#A8A8A8")}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = "#B9B9B9")}
+                >
+                    Log In
+                </Link>
+            )}
         </header>
     );
 };
