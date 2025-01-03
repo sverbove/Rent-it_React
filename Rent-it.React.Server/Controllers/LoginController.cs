@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using Rent_it.React.Server.Data;
 using Rent_it.React.Server.Models.Klanten;
@@ -41,12 +42,12 @@ namespace Rent_It_project.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim("role", user.Rol)
+                new Claim("role", user.Rol),
+                new Claim("accountId", user.AccountID.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yWQh0cBuUhwGdEq3iZj4p0Kcf24cRvCq"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
             var token = new JwtSecurityToken(
             issuer: "https://localhost:5001",
             audience: "https://localhost:5001",
@@ -57,7 +58,8 @@ namespace Rent_It_project.Controllers
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
-                role = user.Rol
+                role = user.Rol,
+                AccountId = user.AccountID,
             });
         }
 

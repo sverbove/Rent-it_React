@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Rent_it.React.Server.Models.RentIt;
 using Rent_it.React.Server.Data;
+using Microsoft.Identity.Client;
 
 namespace Rent_it.React.Server.Controllers
 {
@@ -99,93 +100,89 @@ namespace Rent_it.React.Server.Controllers
 
         // POST: api/VerhuurAanvraag/Aanvraag
         [HttpPost("Aanvraag")]
-        public async Task<ActionResult<VerhuurAanvraag>> CreateVerhuurAanvraag([FromBody] VerhuurAanvraag aanvraag)
+        public async Task<ActionResult<VerhuurAanvraag>> CreateVerhuurAanvraag([FromBody] VerhuuraanvraagDTO aanvraagDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             try
             {
-                var voertuig = await _context.Voertuigen.FindAsync(aanvraag.VoertuigID);
+                var account = await _context.Accounts.FindAsync(aanvraagDto.AccountID);
+                if (account == null)
+                {
+                    return NotFound("Account niet gevonden");
+                }
+
+                // Verify if vehicle exists and is available
+                var voertuig = await _context.Voertuigen.FindAsync(aanvraagDto.VoertuigID);
                 if (voertuig == null)
                 {
                     return NotFound("Voertuig niet gevonden");
                 }
 
-                aanvraag.Status = "In behandeling";
-                _context.VerhuurAanvragen.Add(aanvraag);
+                // Check if vehicle is available for the requested period
+                var isVoertuigBeschikbaar = await CheckVoertuigBeschikbaarheid(
+                    aanvraagDto.VoertuigID,
+                    aanvraagDto.StartDatum,
+                    aanvraagDto.EindDatum
+                );
+
+                if (!isVoertuigBeschikbaar)
+                {
+                    return BadRequest("Voertuig is niet beschikbaar voor de geselecteerde periode");
+                }
+
+                var verhuurAanvraag = new VerhuurAanvraag
+                {
+                    VoertuigID = aanvraagDto.VoertuigID,
+                    AccountId = aanvraagDto.AccountID,
+                    StartDatum = aanvraagDto.StartDatum,
+                    EindDatum = aanvraagDto.EindDatum,
+                    RijbewijsDocNr = aanvraagDto.RijbewijsDocNr,
+                    AardeVanReis = aanvraagDto.AardeVanReis,
+                    VersteBestemming = aanvraagDto.VersteBestemming,
+                    VerwachteKilometers = aanvraagDto.VerwachteKilometers,
+                    Status = "In behandeling"
+                };
+
+                _context.VerhuurAanvragen.Add(verhuurAanvraag);
                 await _context.SaveChangesAsync();
 
                 return Ok(new
                 {
-                    verhuurId = aanvraag.VerhuurID,
+                    verhuurId = verhuurAanvraag.VerhuurID,
                     message = "Aanvraag succesvol ingediend"
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Er is een fout opgetreden bij het verwerken van uw aanvraag." });
+                return StatusCode(500, new
+                {
+                    message = "Er is een fout opgetreden bij het verwerken van de aanvraag"
+                });
             }
         }
 
-        private async Task<bool> ValidateAanvraag(VerhuurAanvraag aanvraag)
+        private async Task<bool> CheckVoertuigBeschikbaarheid(int voertuigId, DateTime startDatum, DateTime eindDatum)
         {
-            // Basisvalidatie
-            if (aanvraag == null ||
-                string.IsNullOrWhiteSpace(aanvraag.RijbewijsDocNr) ||
-                string.IsNullOrWhiteSpace(aanvraag.AardeVanReis) ||
-                string.IsNullOrWhiteSpace(aanvraag.VersteBestemming) ||
-                aanvraag.VerwachteKilometers <= 0)
-            {
-                return false;
-            }
-
-            // Rijbewijs validatie
-            if (aanvraag.RijbewijsDocNr.Length < 8)
-            {
-                return false;
-            }
-
-            // Datum validatie
-            if (aanvraag.StartDatum >= aanvraag.EindDatum ||
-                aanvraag.StartDatum.Date < DateTime.Now.Date)
-            {
-                return false;
-            }
-
-            // Voertuig beschikbaarheid check
-            var voertuig = await _context.Voertuigen
-                .FirstOrDefaultAsync(v => v.VoertuigId == aanvraag.VoertuigID && v.Beschikbaar);
-
-            if (voertuig == null)
-            {
-                return false;
-            }
-
-            // Check voor overlappende reserveringen
-            var bestaandeReservering = await _context.VerhuurAanvragen
-                .AnyAsync(v => v.VoertuigID == aanvraag.VoertuigID &&
+            return !await _context.VerhuurAanvragen
+                .AnyAsync(v => v.VoertuigID == voertuigId &&
                               v.Status != "Geannuleerd" &&
-                              ((aanvraag.StartDatum <= v.EindDatum && aanvraag.EindDatum >= v.StartDatum) ||
-                               (v.StartDatum <= aanvraag.EindDatum && v.EindDatum >= aanvraag.StartDatum)));
-
-            return !bestaandeReservering;
+                              ((startDatum >= v.StartDatum && startDatum <= v.EindDatum) ||
+                               (eindDatum >= v.StartDatum && eindDatum <= v.EindDatum) ||
+                               (startDatum <= v.StartDatum && eindDatum >= v.EindDatum)));
         }
-    
+
 
         // GET: api/VerhuurAanvraag/Aanvragen
         [HttpGet("Aanvragen")]
         public async Task<ActionResult<IEnumerable<VerhuurAanvraag>>> GetAanvragen(
-            [FromQuery] int klantId,
+            [FromQuery] int AccountId,
             [FromQuery] string status = "")
         {
             try
             {
                 var query = _context.VerhuurAanvragen
                     .Include(a => a.Voertuig)
-                    .Where(a => a.KlantID == klantId);
+                    .Where(a => a.AccountId == AccountId);
 
                 if (!string.IsNullOrWhiteSpace(status))
                 {
@@ -200,7 +197,7 @@ namespace Rent_it.React.Server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Fout bij ophalen aanvragen voor klant {klantId}");
+                _logger.LogError(ex, $"Fout bij ophalen aanvragen voor klant {AccountId}");
                 return StatusCode(500, new { message = "Er is een fout opgetreden bij het ophalen van de aanvragen." });
             }
         }
@@ -212,8 +209,9 @@ namespace Rent_it.React.Server.Controllers
             try
             {
                 var aanvraag = await _context.VerhuurAanvragen
-                    .Include(a => a.Voertuig)
-                    .FirstOrDefaultAsync(a => a.VerhuurID == id);
+            .Include(v => v.Account)
+            .Include(v => v.Voertuig)
+            .FirstOrDefaultAsync(v => v.VerhuurID == id);
 
                 if (aanvraag == null)
                 {

@@ -27,6 +27,9 @@ const LoginForm = () => {
                 localStorage.setItem("token", data.token);
                 const decoded = jwtDecode(data.token);
 
+                localStorage.setItem("accountId", data.accountId);
+                localStorage.setItem("userRole", data.role);
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Login succesvol',

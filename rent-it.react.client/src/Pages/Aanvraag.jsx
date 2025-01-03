@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "/src/Components/Navbar";
+import React, { useEffect, useState } from "react";
+import Swal from 'sweetalert2';
 import Footer from "/src/Components/Footer";
+import Navbar from "/src/Components/Navbar";
 import "/src/css/Aanvraag.css";
 
 const Aanvraag = () => {
@@ -100,6 +101,9 @@ const Aanvraag = () => {
             const response = await fetch(
                 `/api/VerhuurAanvraag/Voertuigen?type=${voertuigType}&merk=${merk}&maxPrijs=${maxPrijs}&startDatum=${startDatum}&eindDatum=${eindDatum}&sorteerOp=${sortOption}`
             );
+            if (!response.ok) {
+                throw new Error('Er ging iets mis bij het ophalen van de voertuigen');
+            }
             const data = await response.json();
             setBeschikbareVoertuigen(data);
             setStatus("");
@@ -118,17 +122,24 @@ const Aanvraag = () => {
 
         try {
 
+            const accountId = localStorage.getItem('accountId') || sessionStorage.getItem('accountId');
+
+            if (!accountId) {
+                setStatus("U bent niet ingelogd. Log in om een reservering te maken.");
+                return;
+            }
+
 
             const aanvraagData = {
-                voertuigID: geselecteerdVoertuig.voertuigId,
-                klantID: 1,
-                startDatum: new Date(startDatum).toISOString(),
-                eindDatum: new Date(eindDatum).toISOString(),
-                rijbewijsDocNr,
-                aardeVanReis,
-                versteBestemming,
-                verwachteKilometers: parseInt(verwachteKilometers),
-                status: "In behandeling"
+                VoertuigID: geselecteerdVoertuig.voertuigId,
+                accountId: parseInt(accountId),
+                StartDatum: new Date(startDatum).toISOString(),
+                EindDatum: new Date(eindDatum).toISOString(),
+                RijbewijsDocNr: rijbewijsDocNr,
+                AardeVanReis: aardeVanReis,
+                VersteBestemming: versteBestemming,
+                VerwachteKilometers: parseInt(verwachteKilometers),
+                Status: "In behandeling"
             };
             
 
@@ -136,6 +147,7 @@ const Aanvraag = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify(aanvraagData),
             });
@@ -146,28 +158,47 @@ const Aanvraag = () => {
             }
 
             const result = await response.json();
-            setStatus("Aanvraag succesvol ingediend! AanvraagNummer: " + result.verhuurId);
             resetForm();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Reservering succesvol!',
+                text: `Uw aanvraagnummer is: ${result.verhuurId}`,
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                setStatus("");
+                setBeschikbareVoertuigen([]);
+            });
         } catch (error) {
             setStatus(`Error: ${error.message}`);
         }
     };
 
     const resetForm = () => {
-        setGeselecteerdVoertuig(null);
+        setVoertuigType("Auto's");
+        setMerk("");
+        setMaxPrijs("");
         setStartDatum("");
         setEindDatum("");
+        setGeselecteerdVoertuig(null);
         setRijbewijsDocNr("");
         setAardeVanReis("");
         setVersteBestemming("");
         setVerwachteKilometers("");
         setVoorwaardenGeaccepteerd(false);
+        setSortOption("");
         setPrijsDetails({
             basisHuur: 0,
             verzekering: 0,
             borg: 0,
             totaal: 0
         });
+        setBeschikbareVoertuigen([]);
     };
 
     return (
