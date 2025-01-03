@@ -1,0 +1,102 @@
+.detailsBox {
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.changePasswordBtn {
+    margin-top: 20px;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+.changePasswordBox {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.inputOldPassword {
+    margin-left: 10px;
+    padding: 5px;
+}
+
+.inputNewPassword {
+    margin-left: 10px;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+.inputConfirmPassword {
+    margin-left: 10px;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+.activatePasswordBtn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cancelPasswordBtn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.statusMessage {
+    margin-top: 10px;
+    color: red;
+}
+
+.subscriptionInfoBox {
+    margin-top: 20px;
+}
+
+.editInput {
+    display: block;
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.editDetailsBtn, .saveChangesBtn, .cancelEditBtn {
+    margin-right: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.cancelEditBtn {
+    background-color: #dc3545;
+}
+
+.editDetailsBtn:hover, .saveChangesBtn:hover, .cancelEditBtn:hover {
+    opacity: 0.9;
+}
+

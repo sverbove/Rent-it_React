@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Rent_it.React.Server.Data;
 using Rent_it.React.Server.Models.Klanten;
+using Rent_it.React.Server.Models.RentIt;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace Rent_It_project.Controllers
 {
@@ -96,46 +98,185 @@ namespace Rent_It_project.Controllers
             return Ok($"Medewerker {medewerkerDto.Gebruikersnaam} is gekoppeld aan abonnement.");
         }
 
-
-
-
-
-
-
-
-
-
-
-        /* Deze code staat uit (secret keys zijn weggehaald) */
-        /*[HttpGet("GoogleLogin")]
-        public async Task GoogleLogin()
+        [HttpGet("GetUserDetails")]
+        [Authorize]
+        public async Task<IActionResult> GetUserDetails()
         {
-            var redirectUri = Url.Action("GoogleResponse", "Login", null, Request.Scheme);
+            var userEmail = User.Identity?.Name;
+            var user = await _context.Accounts
+                .Include(u => u.Abonnement)
+                .FirstOrDefaultAsync(u => u.Email == userEmail);
 
-            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
-                new AuthenticationProperties
-                {
-                    RedirectUri = redirectUri
-                });
-        }
-
-        [HttpGet("GoogleResponse")]
-        public async Task<IActionResult> GoogleResponse()
-        {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            if (!result.Succeeded)
+            if (user == null)
             {
-                return Unauthorized("Google authentication failed.");
+                return NotFound("User not found.");
             }
 
-            var claims = result.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
+            return Ok(new
             {
-                claim.Type,
-                claim.Value
+                username = user.Gebruikersnaam,
+                email = user.Email,
+                role = user.Rol,
+                isActive = user.IsActief,
+                subscription = user.Abonnement != null ? new
+                {
+                    type = user.Abonnement.Abonnementsvorm,
+                    startDate = user.Abonnement.Startdatum,
+                    bedrijfsnaam = user.Abonnement.Bedrijfsnaam,
+                    adres = user.Abonnement.Adres,
+                    kvkNummer = user.Abonnement.KvkNummer
+                } : null
             });
+        }
 
-            return Ok(new { Message = "Google login succesful", Claims = claims });
-        }*/
+        [HttpPost("ValidateToken")]
+        [Authorize]
+        public IActionResult ValidateToken()
+        {
+            return Ok(new { valid = true });
+        }
+
+
+        [HttpPost("ChangePassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto passwordDto)
+        {
+            var userEmail = User.Identity?.Name;
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == userEmail);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(passwordDto.OldPassword, user.Wachtwoord))
+            {
+                return Unauthorized("The old password is incorrect.");
+            }
+
+            if (string.IsNullOrWhiteSpace(passwordDto.NewPassword) || passwordDto.NewPassword.Length < 8)
+            {
+                return BadRequest("Password must be at least 8 characters long.");
+            }
+
+            user.Wachtwoord = BCrypt.Net.BCrypt.HashPassword(passwordDto.NewPassword);
+            await _context.SaveChangesAsync();
+
+            return Ok("Password changed successfully.");
+        }
+
+        [HttpPost("UpdateEmail")]
+        [Authorize]
+        public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailDto dto)
+        {
+            var userEmail = User.Identity?.Name;
+            var user = await _context.Accounts.FirstOrDefaultAsync(u => u.Email == userEmail);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Email))
+            {
+                return BadRequest("Email cannot be empty.");
+            }
+
+            user.Email = dto.Email;
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                username = user.Gebruikersnaam,
+                email = user.Email,
+                role = user.Rol,
+                isActive = user.IsActief,
+                subscription = user.Abonnement != null ? new
+                {
+                    type = user.Abonnement.Abonnementsvorm,
+                    startDate = user.Abonnement.Startdatum,
+                    bedrijfsnaam = user.Abonnement.Bedrijfsnaam,
+                    adres = user.Abonnement.Adres,
+                    kvkNummer = user.Abonnement.KvkNummer
+                } : null
+            });
+        }
+
+        [HttpPost("UpdateAddress")]
+        [Authorize(Roles = "Zakelijke Klant")]
+        public async Task<IActionResult> UpdateAddress([FromBody] UpdateAddressDto dto)
+        {
+            var userEmail = User.Identity?.Name;
+            var user = await _context.Accounts
+                .Include(a => a.Abonnement)
+                .FirstOrDefaultAsync(a => a.Email == userEmail);
+
+            if (user == null || user.Abonnement == null)
+            {
+                return NotFound("User or subscription not found.");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Address))
+            {
+                return BadRequest("Address cannot be empty.");
+            }
+
+            user.Abonnement.Adres = dto.Address;
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                username = user.Gebruikersnaam,
+                email = user.Email,
+                role = user.Rol,
+                isActive = user.IsActief,
+                subscription = new
+                {
+                    type = user.Abonnement.Abonnementsvorm,
+                    startDate = user.Abonnement.Startdatum,
+                    bedrijfsnaam = user.Abonnement.Bedrijfsnaam,
+                    adres = user.Abonnement.Adres,
+                    kvkNummer = user.Abonnement.KvkNummer
+                }
+            });
+        }
     }
+
+
+
+
+
+
+
+    /* Deze code staat uit (secret keys zijn weggehaald) */
+    /*[HttpGet("GoogleLogin")]
+    public async Task GoogleLogin()
+    {
+        var redirectUri = Url.Action("GoogleResponse", "Login", null, Request.Scheme);
+
+        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+            new AuthenticationProperties
+            {
+                RedirectUri = redirectUri
+            });
+    }
+
+    [HttpGet("GoogleResponse")]
+    public async Task<IActionResult> GoogleResponse()
+    {
+        var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        if (!result.Succeeded)
+        {
+            return Unauthorized("Google authentication failed.");
+        }
+
+        var claims = result.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
+        {
+            claim.Type,
+            claim.Value
+        });
+
+        return Ok(new { Message = "Google login succesful", Claims = claims });
+    }*/
 }

@@ -16,11 +16,9 @@ namespace Rent_it.React.Server.Data
             using (var context = new RentItDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<RentItDbContext>>()))
             {
-                // Verwijder de database
-                context.Database.EnsureDeleted();
-
-                // Maak de database opnieuw aan
-                context.Database.Migrate();
+                // Verwijder de database (LET OP ALS JE DIT ACTIVEERT)
+                /*context.Database.EnsureDeleted();
+                context.Database.Migrate(); // Maak de database opnieuw aan */
 
                 if (!context.Accounts.Any())
                 {

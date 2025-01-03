@@ -12,6 +12,7 @@ import PrivacyOvereenkomst from "/src/Pages/PrivacyOvereenkomst";
 import LoginForm from "/src/Components/LoginForm";
 import Aanvraag from "/src/Pages/Aanvraag";
 import Temp from "/src/Pages/Temp";
+import UserInfo from "/src/Pages/UserInfo";
 import ProtectedRoute from "./src/Components/ProtectedRoute";
 import AddMedewerkerForm from "./src/Components/AddMedewerkerForm";
 
@@ -43,6 +44,8 @@ const App = () => {
                 <Route path="/aanvraag" element={<Aanvraag />} />
                 <Route path="/Temp" element={<Temp />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="/UserInfo" element={<UserInfo />} />
+
 
                 {/* Protected Routes "Particuliere Klant" */}
                 <Route element={<ProtectedRoute allowedRoles={["Particuliere Klant"]} />}>

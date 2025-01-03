@@ -7,7 +7,31 @@ const Navbar = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        setIsLoggedIn(!!token);
+
+        if (token) {
+            fetch("/api/Login/ValidateToken", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        setIsLoggedIn(true);
+                    } else {
+                        localStorage.removeItem("token");
+                        setIsLoggedIn(false);
+                    }
+                })
+                .catch((err) => {
+                    console.error("Error validating token:", err);
+                    localStorage.removeItem("token");
+                    setIsLoggedIn(false);
+                });
+        } else {
+            setIsLoggedIn(false);
+        }
     }, []);
 
     const handleLogout = () => {
@@ -100,32 +124,49 @@ const Navbar = () => {
                 }}>Temp</Link>
             </nav>
 
-            {/* Render login OR logout button */}
+            {/* Render login OR logout button + profile */}
             {isLoggedIn ? (
-                <button
-                    onClick={handleLogout}
-                    style={{
-                        textDecoration: "none",
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                        marginRight: "10px",
-                        marginTop: "0px",
-                        padding: "10px 20px",
-                        color: "#fff",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                        marginLeft: "auto",
-                        backgroundColor: "#D9534F",
-                        border: "none",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                        transition: "transform 0.2s, background-color 0.3s",
-                    }}
-                    onMouseOver={(e) => (e.target.style.backgroundColor = "#C9302C")}
-                    onMouseOut={(e) => (e.target.style.backgroundColor = "#D9534F")}
-                    onFocus={(e) => (e.target.style.backgroundColor = "#C9302C")}
-                >
-                    Log Out
-                </button>
+                <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
+                    <button
+                        onClick={() => navigate("/UserInfo")}
+                        style={{
+                            textDecoration: "none",
+                            fontSize: "18px",
+                            fontWeight: "bold",
+                            padding: "5px 20px",
+                            color: "#000",
+                            backgroundColor: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                        }}
+                    >
+                        Profiel
+                    </button>
+                    <button
+                        onClick={handleLogout}
+                        style={{
+                            textDecoration: "none",
+                            fontSize: "18px",
+                            fontWeight: "bold",
+                            marginRight: "10px",
+                            marginTop: "0px",
+                            padding: "10px 20px",
+                            color: "#fff",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            marginLeft: "auto",
+                            backgroundColor: "#D9534F",
+                            border: "none",
+                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                            transition: "transform 0.2s, background-color 0.3s",
+                        }}
+                        onMouseOver={(e) => (e.target.style.backgroundColor = "#C9302C")}
+                        onMouseOut={(e) => (e.target.style.backgroundColor = "#D9534F")}
+                        onFocus={(e) => (e.target.style.backgroundColor = "#C9302C")}
+                    >
+                        Log Out
+                    </button>
+                </div>
             ) : (
                 <Link
                     to="/Login"
